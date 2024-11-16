@@ -8,6 +8,10 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/joho/godotenv"
 	"googlemaps.github.io/maps"
 )
@@ -19,6 +23,7 @@ type Response struct {
 }
 
 var mapsClient *maps.Client
+var s3Client *s3.S3
 
 func init() {
 	// Load environment variables
@@ -28,11 +33,19 @@ func init() {
 	}
 
 	// Initialize Google Maps client
-	var errClient error
-	mapsClient, errClient = maps.NewClient(maps.WithAPIKey(os.Getenv("GOOGLE_MAPS_KEY")))
-	if errClient != nil {
-		panic(fmt.Sprintf("Failed to create Google Maps client: %v", errClient))
+	mapsClient, err = maps.NewClient(maps.WithAPIKey(os.Getenv("GOOGLE_MAPS_KEY")))
+	if err != nil {
+		panic(fmt.Sprintf("Failed to create Google Maps client: %v", err))
 	}
+
+	s3Client = s3.New(session.Must(session.NewSession(&aws.Config{
+		Region: aws.String(os.Getenv("VIDWIRE_S3_REGION")),
+		Credentials: credentials.NewStaticCredentials(
+			os.Getenv("VIDWIRE_AWS_ACCESS_KEY_ID"),
+			os.Getenv("VIDWIRE_AWS_SECRET_ACCESS_KEY"),
+			"",
+		),
+	})))
 }
 
 func handler(request events.APIGatewayProxyRequest) (Response, error) {
