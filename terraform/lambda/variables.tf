@@ -19,9 +19,9 @@ variable "runtime" {
   default = "python3.12"
 }
 
-variable "source_dir" {
+variable "zip_path" {
   type = string
-  description = "Directory containing source code for lambda"
+  description = "Path of zip folder for lambda"
 }
 
 variable "env_vars" {
