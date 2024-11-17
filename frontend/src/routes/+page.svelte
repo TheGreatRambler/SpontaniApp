@@ -2,6 +2,72 @@
   import DestinationCard from '$lib/destinationCard.svelte';
 
   let tmpImage = 'rocks.jpg';
+
+  const destinationData = [
+    {
+      "title": "Rocks",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      "lat": 0.0,
+      "lng": 0.0,
+      "start": 1731825677,
+      "stop": 1731925677,
+      "initial_img_id": "",
+    },
+    {
+      "title": "Rocks",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      "lat": 0.0,
+      "lng": 0.0,
+      "start": 1731825677,
+      "stop": 1731925677,
+      "initial_img_id": "",
+    },
+    {
+      "title": "Rocks",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      "lat": 0.0,
+      "lng": 0.0,
+      "start": 1731825677,
+      "stop": 1731925677,
+      "initial_img_id": "",
+    },
+    {
+      "title": "Rocks",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      "lat": 0.0,
+      "lng": 0.0,
+      "start": 1731825677,
+      "stop": 1731925677,
+      "initial_img_id": "",
+    },
+    {
+      "title": "Rocks",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      "lat": 0.0,
+      "lng": 0.0,
+      "start": 1731825677,
+      "stop": 1731925677,
+      "initial_img_id": "",
+    },
+    {
+      "title": "Rocks",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      "lat": 0.0,
+      "lng": 0.0,
+      "start": 1731825677,
+      "stop": 1731925677,
+      "initial_img_id": "",
+    },
+    {
+      "title": "Rocks",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      "lat": 0.0,
+      "lng": 0.0,
+      "start": 1731825677,
+      "stop": 1731925677,
+      "initial_img_id": "",
+    },
+  ];
 </script>
 
 <div class="flex flex-col items-center w-full py-24 bg-primary-300">
@@ -16,8 +82,8 @@
       <p>where will you go today?</p>
     </header>
     <div class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center">
-      {#each Array(10) as _}
-        <DestinationCard img={tmpImage} endDate={new Date(Date.now())} name="Rocks" />
+      {#each destinationData as dest}
+        <DestinationCard img={tmpImage} description={dest.description} endDate={dest.stop} name={dest.title} />
       {/each}
     </div>
   </div>
@@ -29,7 +95,7 @@
     </header>
     <div class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center">
       {#each Array(3) as _}
-        <DestinationCard img={tmpImage} endDate={new Date(Date.now())} name="Rocks" />
+        <DestinationCard img={tmpImage} description="foo bar eggs spam" endDate={0} name="placeholder" />
       {/each}
     </div>
   </div>
