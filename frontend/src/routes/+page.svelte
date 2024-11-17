@@ -99,7 +99,7 @@
   <button 
   class="absolute top-4 right-4 bg-primary-500 text-white font-bold rounded-full h-12 w-12 flex items-center justify-center hover:bg-primary-700 focus:outline-none"
   aria-label="Add"
-  on:click={() => window.location.href = '/form'}
+  onclick={() => window.location.href = '/form'}
 >
   +
 </button>
