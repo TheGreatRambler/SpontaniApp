@@ -162,7 +162,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 		return events.APIGatewayProxyResponse{
 			StatusCode: 200,
-			Body:       fmt.Sprintf("\"id\":%d}", task_id),
+			Body:       fmt.Sprintf("{\"id\":%d}", task_id),
 		}, nil
 	case "upload_image":
 		if request.Body == "" {
