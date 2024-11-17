@@ -99,7 +99,7 @@
 
 <main class="m-4">
   {#if loaded}
-    <MapComponent markers={[{lat: 32.98599729543064, lng: -96.7508045889115, title: 'hello'}]} start_lat={start_lat} start_lng={start_lng}/>
+    <MapComponent markers={[{lat: 32.98599729543064, lng: -96.7508045889115, title: 'hello'}]} start_lat={start_lat} start_lng={start_lng} map_center={undefined}/>
   {/if}
 
   <div class="my-12">

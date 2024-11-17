@@ -6,6 +6,7 @@
     markers: { lat: number; lng: number; title: string }[];
     start_lat: number;
     start_lng: number;
+    map_center: ((map: google.maps.Map) => void) | undefined;
   } = $props();
 
   let mapElement: HTMLElement;
@@ -14,7 +15,7 @@
 
   onMount(async () => {
     const loader = new Loader({
-      apiKey: await (await (await fetch('https://f007qjswdf.execute-api.us-east-1.amazonaws.com/prod/get?request_type=get_google_maps_key')).blob()).text(),
+      apiKey: await (await (await fetch('https://uelhkpgmp9.execute-api.us-east-1.amazonaws.com/prod/get?request_type=get_google_maps_key')).blob()).text(),
       version: 'weekly',
       libraries: ['marker']
     });
@@ -30,6 +31,12 @@
         map = new google.maps.Map(mapElement, mapOptions);
 
         map.setCenter({lat: props.start_lat, lng: props.start_lng});
+
+        if (props.map_center) {
+          map.addListener('center_changed', () => {
+            props.map_center!(map!);
+          });
+        }
 
         props.markers.forEach((d) => {
           console.log(d);

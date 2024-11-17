@@ -1,8 +1,8 @@
-<script>
+<script lang='ts'>
     import { onMount } from 'svelte';
     import { Card, Button, Label, Input, Datepicker, Fileupload, Helper } from 'flowbite-svelte';
     import MapComponent from '$lib/map.svelte';
-    let selectedDate = null;
+    let selectedDate: Date | null = null;
 
     let loaded = $state(false);
 
@@ -17,9 +17,14 @@
       });
     });
 
-    const markers = [
-        { lat: 32.98599729543064, lng: -96.7508045889115, title: 'hello' }
+    let markers = [
+        { lat: lat, lng: lng, title: 'hello' }
     ];
+    let map_center = (map: google.maps.Map) => {
+        let center = map.getCenter();
+        markers = [{ lat: center?.lat()!, lng: center?.lng()!, title: 'changing' }];
+        console.log(markers);
+    };
 </script>
 
 <div class="flex min-h-screen dark:bg-primary-300">
@@ -41,7 +46,7 @@
             <Label class="space-y-2">
                 <span>Choose a Date</span>
                 <div class="mb-4 md:w-1/2">
-                    <Datepicker bind:value={selectedDate} class="bg-white dark:bg-primary-600 border border-primary-300 dark:border-primary-500" />
+                    <Datepicker bind:value={selectedDate} inputClass="bg-white dark:bg-primary-600 border border-primary-300 dark:border-primary-500" />
                 </div>
             </Label>
             
@@ -59,7 +64,7 @@
                 <Label class="space-y-2">
                     <h3 class="text-xl font-medium text-gray-900 dark:text-white">Location</h3>
                 </Label>
-                <MapComponent {markers} start_lat={lat} start_lng={lng}/>
+                <MapComponent {markers} start_lat={lat} start_lng={lng} map_center={map_center}/>
         </form>
     </div>
 </div>

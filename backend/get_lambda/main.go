@@ -103,6 +103,33 @@ func getLatLngParameters(request events.APIGatewayProxyRequest) (float64, float6
 	return lat, lng, nil
 }
 
+func findClosestWaypoint(lat, lng float64) (string, string, error) {
+	// Define the request for Nearby Search
+	req := &maps.NearbySearchRequest{
+		Location: &maps.LatLng{
+			Lat: lat,
+			Lng: lng,
+		},
+		Radius: 5000, // Search within 5km radius
+	}
+
+	// Execute the Nearby Search request
+	resp, err := mapsClient.NearbySearch(context.Background(), req)
+	if err != nil {
+		return "", "", fmt.Errorf("failed to perform nearby search: %w", err)
+	}
+
+	// Check if there are any results
+	if len(resp.Results) == 0 {
+		return "", "", fmt.Errorf("no waypoints found near the specified location")
+	}
+
+	// Extract the name and address of the closest waypoint
+	closest := resp.Results[0]
+
+	return closest.Name, closest.FormattedAddress, nil
+}
+
 type RowScanner interface {
 	Scan(dest ...interface{}) error
 }
@@ -481,6 +508,30 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			Body:       string(imgs_json),
 			Headers: map[string]string{
 				"Content-Type": "application/json",
+			},
+		}, nil
+	case "location_to_place_name":
+		lat, lng, res := getLatLngParameters(request)
+		if res != nil {
+			return *res, nil
+		}
+
+		name, _, err := findClosestWaypoint(lat, lng)
+		if err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 500,
+				Body:       fmt.Sprintf("Waypoint naming error: %v", err),
+				Headers: map[string]string{
+					"Content-Type": "text/plain",
+				},
+			}, nil
+		}
+
+		return events.APIGatewayProxyResponse{
+			StatusCode: 200,
+			Body:       name,
+			Headers: map[string]string{
+				"Content-Type": "text/plain",
 			},
 		}, nil
 	default:
