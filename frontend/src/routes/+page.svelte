@@ -78,17 +78,18 @@
   };
 </script>
 
-<div class="flex flex-col items-center w-full py-24 bg-primary-300">
-  <h1 class="block m-2 text-6xl text-black font-bold">spontani</h1>
-  <p class="text-lg text-primary-900">unite through adventure</p>
-
   <button
-    class="absolute top-4 right-4 bg-primary-500 text-white font-bold rounded-full h-12 w-12 flex items-center justify-center hover:bg-primary-700 focus:outline-none"
+    class="absolute top-4 right-4 sm:top-6 sm:right-6 bg-primary-500 text-white font-bold rounded-full size-16 text-4xl flex items-center justify-center hover:bg-primary-600 focus:outline-none"
     aria-label="Add"
     onclick={() => (window.location.href = "/form")}
   >
     +
   </button>
+
+<div class="flex flex-col items-center w-full py-24 bg-primary-300">
+  <h1 class="block m-2 text-6xl text-black font-bold">spontani</h1>
+  <p class="text-lg text-primary-900">unite through adventure</p>
+
 </div>
 
 <main class="m-4">
