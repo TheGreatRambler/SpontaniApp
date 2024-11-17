@@ -199,12 +199,12 @@
                     <div
                         class="absolute top-1/2 left-1/2 w-4 h-4 bg-red-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
                     ></div>
-                    <span
-                        bind:this={live_place_name_element}
-                        class="text-center text-xl font-medium text-gray-900 dark:text-white"
-                        >Here</span
-                    >
                 </MapComponent>
+                <span
+                    bind:this={live_place_name_element}
+                    class="text-center text-xl font-medium text-gray-900 dark:text-white"
+                    >Here</span
+                >
             {/if}
         </form>
     </div>
