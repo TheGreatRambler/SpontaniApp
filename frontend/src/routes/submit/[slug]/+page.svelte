@@ -15,7 +15,7 @@
       <p>{data.destination.description}</p>
     </header>
 
-    <div class="mx-auto">
+    <div class="flex justify-center">
       <div class="carousel-container max-w-3xl space-y-4">
         <Carousel images={data.images} let:Indicators let:Controls bind:index class="w-[75vw]">
           <Controls />
