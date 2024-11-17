@@ -39,10 +39,10 @@ func init() {
 	}
 
 	s3Client = s3.New(session.Must(session.NewSession(&aws.Config{
-		Region: aws.String(os.Getenv("VIDWIRE_S3_REGION")),
+		Region: aws.String(os.Getenv("S3_REGION")),
 		Credentials: credentials.NewStaticCredentials(
-			os.Getenv("VIDWIRE_AWS_ACCESS_KEY_ID"),
-			os.Getenv("VIDWIRE_AWS_SECRET_ACCESS_KEY"),
+			os.Getenv("AWS_ACCESS_KEY_ID"),
+			os.Getenv("AWS_SECRET_ACCESS_KEY"),
 			"",
 		),
 	})))
