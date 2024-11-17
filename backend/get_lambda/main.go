@@ -240,9 +240,9 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				description, lat, lng, uploaded,
 				start, stop, initial_img_id, likes,
 				point($1, $2) <@> (point(lat, lng)::point) as distance
-				FROM task WHERE stop > $3
+				FROM task WHERE stop > now()
 				ORDER BY distance ASC
-		`, lat, lng, time.Now())
+		`, lat, lng)
 		if err != nil {
 			return events.APIGatewayProxyResponse{
 				StatusCode: 500,
