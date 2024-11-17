@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { Button, Fileupload, Input, Modal } from 'flowbite-svelte';
+  import { Button, Fileupload, Modal } from 'flowbite-svelte';
 
   let { openModal = $bindable(), name }: { openModal: boolean, name: string } = $props();
 
@@ -25,8 +25,6 @@
     <!-- whee duplication go brr -->
     <!-- if this wasn't a hackathon project, I woulda made the component -->
     <Fileupload name="file" id="with_helper" class="mb-2" />
-    <!-- TODO: remove the input - the backend doesn't support captions -->
-    <!-- <Input name="fuckyfuckybitchbitch" type="text" placeholder="Enter a caption (optional)" /> -->
     <Button type="submit" class="w-full mt-2">Upload</Button>
   </form>
 
