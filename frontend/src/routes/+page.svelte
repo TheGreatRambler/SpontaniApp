@@ -13,6 +13,31 @@
   let start_lat = $state(0.0);
   let start_lng = $state(0.0);
 
+  let get_recent_tasks = async (lat: number, lng: number) => {
+    let res = await fetch(
+      `${import.meta.env.VITE_BASE_URL}/get?request_type=get_nearby_recent_tasks&lat=${lat}&lng=${lng}`,
+    );
+    let taskData = await res.json();
+
+    let newDestinationData: any[] = [];
+    for (let task of taskData) {
+      let initial_image_url = (
+        await (
+          await fetch(
+            `${import.meta.env.VITE_BASE_URL}/post?request_type=get_presigned_url&id=${task.initial_img_id}`,
+            { method: "POST" },
+          )
+        ).json()
+      ).url;
+      newDestinationData.push({
+        ...task,
+        initial_image_url: initial_image_url,
+      });
+    }
+
+    destinationData = newDestinationData;
+  };
+
   onMount(async () => {
     navigator.geolocation.getCurrentPosition(
       (position: GeolocationPosition) => {
@@ -21,28 +46,7 @@
         loaded = true;
 
         (async function () {
-          let res = await fetch(
-            `${import.meta.env.VITE_BASE_URL}/get?request_type=get_nearby_recent_tasks&lat=${start_lat}&lng=${start_lng}`,
-          );
-          let taskData = await res.json();
-
-          let newDestinationData: any[] = [];
-          for (let task of taskData) {
-            let initial_image_url = (
-              await (
-                await fetch(
-                  `${import.meta.env.VITE_BASE_URL}/post?request_type=get_presigned_url&id=${task.initial_img_id}`,
-                  { method: "POST" },
-                )
-              ).json()
-            ).url;
-            newDestinationData.push({
-              ...task,
-              initial_image_url: initial_image_url,
-            });
-          }
-
-          destinationData = newDestinationData;
+          await get_recent_tasks(start_lat, start_lng);
         })();
 
         (async function () {
@@ -68,11 +72,23 @@
           }
 
           completedDestinationData = newCompleteDestinationData;
-
         })();
       },
     );
   });
+
+  let last_update = 0;
+  let map_center = async (map: google.maps.Map) => {
+    let center = map.getCenter();
+
+    let timestamp = Date.now();
+    if (timestamp - last_update > 1000 * 1) {
+      last_update = timestamp;
+
+      // Trigger new search
+      await get_recent_tasks(center!.lat(), center!.lng());
+    }
+  };
 </script>
 
 <div class="flex flex-col items-center w-full py-24 bg-primary-300">
@@ -96,6 +112,7 @@
       ]}
       {start_lat}
       {start_lng}
+      {map_center}
     />
   {/if}
 
@@ -136,16 +153,16 @@
       class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center"
     >
       {#each completedDestinationData as dest}
-      <DestinationCard
-        description={dest.description}
-        endDate={dest.stop * 1000}
-        img={dest.initial_image_url}
-        lat={dest.lat}
-        lng={dest.lng}
-        name={dest.title}
-        id={dest.id}
-      />
-    {/each}
-</div>
+        <DestinationCard
+          description={dest.description}
+          endDate={dest.stop * 1000}
+          img={dest.initial_image_url}
+          lat={dest.lat}
+          lng={dest.lng}
+          name={dest.title}
+          id={dest.id}
+        />
+      {/each}
+    </div>
   </div>
 </main>
