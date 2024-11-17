@@ -3,14 +3,7 @@
 
   import SubmitModal from '$lib/submit.svelte';
 
-  interface Destination {
-    description: string,
-    endDate: number,
-    img: any,
-    lat: number,
-    lng: number,
-    name: string
-  };
+  import type { Destination } from '$lib/destinationInterface.ts';
 
   let { description, endDate, img, lat, lng, name }: Destination = $props();
   let openModal: boolean = $state(false);
