@@ -54,6 +54,13 @@ resource "null_resource" "run_build_script_get" {
   }
 }
 
+resource "aws_s3_bucket" "img_bucket" {
+  bucket = "spontaniapp-imgs"
+  tags = {
+    Name = "Image Bucket"
+  }
+}
+
 module "get_lambda" {
     source = "./lambda"
     function_name = "get"

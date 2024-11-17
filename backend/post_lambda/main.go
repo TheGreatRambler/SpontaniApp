@@ -1,11 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -70,6 +70,16 @@ func init() {
 	}
 }
 
+type TaskPost struct {
+	Title        string  `json:"title"`
+	Description  string  `json:"description"`
+	Lat          float64 `json:"lat"`
+	Lng          float64 `json:"lng"`
+	Start        int64   `json:"start"`
+	Stop         int64   `json:"stop"`
+	InitialImgId int     `json:"initial_img_id"`
+}
+
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	request_type, exists := request.QueryStringParameters["request_type"]
 	if !exists {
@@ -80,90 +90,120 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	}
 
 	switch request_type {
-	case "get_google_maps_key":
-		return events.APIGatewayProxyResponse{
-			StatusCode: 200,
-			Body:       os.Getenv("DATABASE_URL"),
-		}, nil
-	case "get_nearby_recent_tasks":
-		lat_str, lat_exists := request.QueryStringParameters["lat"]
-		lng_str, lng_exists := request.QueryStringParameters["lng"]
-		if !lat_exists || !lng_exists {
+	case "create_task":
+		var task_id int
+
+		body := request.Body
+
+		var request TaskPost
+		err := json.Unmarshal([]byte(body), &request)
+		if err != nil {
 			return events.APIGatewayProxyResponse{
 				StatusCode: 400,
-				Body:       "Missing required parameters: lat, lng",
+				Body:       "Invalid JSON body",
 			}, nil
 		}
 
-		lat, lat_err := strconv.ParseFloat(lat_str, 64)
-		lng, lng_err := strconv.ParseFloat(lng_str, 64)
-		if lat_err != nil || lng_err != nil {
-			return events.APIGatewayProxyResponse{
-				StatusCode: 400,
-				Body:       "Invalid required parameters: lat, lng",
-			}, nil
-		}
-
-		rows, err := dbConn.Query(context.Background(), `
-			SELECT id, title, description, lat, lng, uploaded,
-				start, stop, initial_img_id, likes,
-				point($1, $2) <@>  (point(lat, lng)::point) as distance
-				FROM task ORDER BY distance ASC
-		`, lat, lng)
+		err = dbConn.QueryRow(context.Background(), `
+			INSERT INTO task (title, description, lat, lng, uploaded, start, stop, initial_img_id, likes)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 0)
+			RETURNING id
+		`,
+			request.Title,
+			request.Description,
+			request.Lat,
+			request.Lng,
+			time.Now().Unix(),
+			request.Start,
+			request.Stop,
+			request.InitialImgId,
+		).Scan(&task_id)
 		if err != nil {
 			return events.APIGatewayProxyResponse{
 				StatusCode: 500,
 				Body:       fmt.Sprintf("Database error: %v", err),
 			}, nil
 		}
-		defer rows.Close()
 
-		tasks := []TaskRet{}
-		for rows.Next() {
-			var id int
-			var title string
-			var description string
-			var lat float64
-			var lng float64
-			var uploaded int64
-			var start int64
-			var stop int64
-			var initial_img_id int
-			var likes int
-			var distance float64
-			err := rows.Scan(&id, &title, &description, &lat, &lng, &uploaded, &start, &stop, &initial_img_id, &likes, &distance)
-			if err != nil {
-				return events.APIGatewayProxyResponse{
-					StatusCode: 500,
-					Body:       fmt.Sprintf("Database error: %v", err),
-				}, nil
-			}
-			tasks = append(tasks, TaskRet{
-				Id:           id,
-				Title:        title,
-				Description:  description,
-				Lat:          lat,
-				Lng:          lng,
-				Uploaded:     uploaded,
-				Start:        start,
-				Stop:         stop,
-				InitialImgId: initial_img_id,
-				Likes:        likes,
-			})
+		return events.APIGatewayProxyResponse{
+			StatusCode: 200,
+			Body:       string("{\"id\": " + fmt.Sprint(task_id) + "}"),
+		}, nil
+	case "upload_image":
+		if request.Body == "" {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       "Missing required parameter: body",
+			}, nil
+		}
+		if !request.IsBase64Encoded {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       "Request must be base64 encoded",
+			}, nil
 		}
 
-		tasks_json, err := json.Marshal(tasks)
+		taskId, exists := request.QueryStringParameters["task_id"]
+		if !exists {
+			taskId = ""
+		}
+		caption, exists := request.QueryStringParameters["caption"]
+		if !exists {
+			caption = ""
+		}
+
+		var img_id int
+
+		var err error
+
+		if taskId == "" {
+			err = dbConn.QueryRow(context.Background(), `
+				INSERT INTO img (uploaded, caption)
+				VALUES ($1, $2)
+				RETURNING id
+			`,
+				time.Now().Unix(),
+				caption,
+			).Scan(&img_id)
+		} else {
+			err = dbConn.QueryRow(context.Background(), `
+				INSERT INTO img (task_id, uploaded, caption)
+				VALUES ($1, $2, $3)
+				RETURNING id
+			`,
+				taskId,
+				time.Now().Unix(),
+				caption,
+			).Scan(&img_id)
+		}
+
 		if err != nil {
 			return events.APIGatewayProxyResponse{
 				StatusCode: 500,
-				Body:       fmt.Sprintf("JSON marshalling error: %v", err),
+				Body:       fmt.Sprintf("Failed to insert image: %v", err),
+			}, nil
+		}
+
+		// Upload image to S3
+		_, err = s3Client.PutObject(&s3.PutObjectInput{
+			Bucket:      aws.String("spontaniapp-imgs"),
+			Key:         aws.String(fmt.Sprintf("%d-%d", taskId, img_id)),
+			Body:        bytes.NewReader([]byte(request.Body)),
+			ContentType: aws.String("image/jpeg"),
+		})
+
+		if err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 500,
+				Body:       fmt.Sprintf("Failed to upload image: %v", err),
 			}, nil
 		}
 
 		return events.APIGatewayProxyResponse{
 			StatusCode: 200,
-			Body:       string(tasks_json),
+			Body:       string("{\"id\": " + fmt.Sprint(img_id) + "}"),
 		}, nil
+
 	default:
 		return events.APIGatewayProxyResponse{
 			StatusCode: 400,
@@ -171,26 +211,6 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		}, nil
 	}
 
-	// // Perform Nearby Search
-	// response, err := mapsClient.NearbySearch(context.Background(), &maps.NearbySearchRequest{
-	// 	Location: &maps.LatLng{
-	// 		Lat: lat,
-	// 		Lng: lng,
-	// 	},
-	// 	Radius: uint(10), // Adjust radius as needed
-	// })
-	// if err != nil {
-	// 	return Response{
-	// 		StatusCode: 500,
-	// 		Body:       nil,
-	// 	}, fmt.Errorf("failed to perform Nearby Search: %v", err)
-	// }
-
-	// // Return results as JSON
-	// return Response{
-	// 	StatusCode: 200,
-	// 	Body:       response.Results,
-	// }, nil
 }
 
 func main() {
