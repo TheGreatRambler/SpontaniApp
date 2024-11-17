@@ -139,7 +139,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			INSERT INTO task (title, location_name, location_address,
 			description, lat, lng, uploaded, start, stop,
 			initial_img_id, likes)
-			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 0)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 0)
 			RETURNING id
 		`,
 			request.Title,

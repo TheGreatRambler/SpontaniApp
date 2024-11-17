@@ -56,7 +56,7 @@
 
     let files: FileList | undefined = $state();
     let on_file_upload_change = async () => {
-        let file = files[0];
+        let file = files![0];
 
         let res = await (
             await fetch(
@@ -76,21 +76,25 @@
 
     let on_form_submit = async () => {
         if (selectedStartDate && selectedEndDate) {
-            let res = await (await fetch(
-                `${import.meta.env.VITE_BASE_URL}/post?request_type=create_task`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({
-                        title: form_data.title,
-                        description: form_data.description,
-                        lat: lat,
-                        lng: lng,
-                        start: Math.floor(selectedStartDate!.getTime() / 1000),
-                        stop: Math.floor(selectedEndDate!.getTime() / 1000),
-                        initial_image_id: form_data.initial_image_id,
-                    }),
-                },
-            )).json();
+            let res = await (
+                await fetch(
+                    `${import.meta.env.VITE_BASE_URL}/post?request_type=create_task`,
+                    {
+                        method: "POST",
+                        body: JSON.stringify({
+                            title: form_data.title,
+                            description: form_data.description,
+                            lat: lat,
+                            lng: lng,
+                            start: Math.floor(
+                                selectedStartDate!.getTime() / 1000,
+                            ),
+                            stop: Math.floor(selectedEndDate!.getTime() / 1000),
+                            initial_image_id: form_data.initial_image_id,
+                        }),
+                    },
+                )
+            ).json();
 
             // Update image's task ID
             await fetch(
@@ -99,6 +103,8 @@
                     method: "POST",
                 },
             );
+
+            window.location.href = "/completion";
         }
     };
 </script>
@@ -168,9 +174,7 @@
                     class="bg-primary-600 w-1/4"
                     onclick={() => (window.location.href = "/")}>Cancel</Button
                 >
-                <Button
-                    class="bg-primary-600 w-1/4"
-                    onclick={() => (window.location.href = "/completion")}
+                <Button class="bg-primary-600 w-1/4" onclick={on_form_submit}
                     >Submit</Button
                 >
             </div>

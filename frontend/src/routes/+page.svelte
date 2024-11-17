@@ -1,80 +1,87 @@
-<script lang='ts'>
-  import { onMount } from 'svelte';
-  import DestinationCard from '$lib/destinationCard.svelte';
-  import MapComponent from '$lib/map.svelte';
+<script lang="ts">
+  import { onMount } from "svelte";
+  import DestinationCard from "$lib/destinationCard.svelte";
+  import MapComponent from "$lib/map.svelte";
 
-  let tmpImage = 'rocks.jpg';
+  let tmpImage = "rocks.jpg";
 
   let destinationData = $state([
     {
-      "title": "Rocks",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      "lat": 0.0,
-      "lng": 0.0,
-      "start": 1731825677,
-      "stop": 1731925677,
-      "initial_img_id": "",
-      "id": 1,
+      title: "Rocks",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      lat: 0.0,
+      lng: 0.0,
+      start: 1731825677,
+      stop: 1731925677,
+      initial_img_id: "",
+      id: 1,
     },
     {
-      "title": "Rocks",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      "lat": 0.0,
-      "lng": 0.0,
-      "start": 1731825677,
-      "stop": 1731925677,
-      "initial_img_id": "",
-      "id": 1,
+      title: "Rocks",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      lat: 0.0,
+      lng: 0.0,
+      start: 1731825677,
+      stop: 1731925677,
+      initial_img_id: "",
+      id: 1,
     },
     {
-      "title": "Rocks",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      "lat": 0.0,
-      "lng": 0.0,
-      "start": 1731825677,
-      "stop": 1731925677,
-      "initial_img_id": "",
-      "id": 1,
+      title: "Rocks",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      lat: 0.0,
+      lng: 0.0,
+      start: 1731825677,
+      stop: 1731925677,
+      initial_img_id: "",
+      id: 1,
     },
     {
-      "title": "Rocks",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      "lat": 0.0,
-      "lng": 0.0,
-      "start": 1731825677,
-      "stop": 1731925677,
-      "initial_img_id": "",
-      "id": 1,
+      title: "Rocks",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      lat: 0.0,
+      lng: 0.0,
+      start: 1731825677,
+      stop: 1731925677,
+      initial_img_id: "",
+      id: 1,
     },
     {
-      "title": "Rocks",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      "lat": 0.0,
-      "lng": 0.0,
-      "start": 1731825677,
-      "stop": 1731925677,
-      "initial_img_id": "",
-      "id": 1,
+      title: "Rocks",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      lat: 0.0,
+      lng: 0.0,
+      start: 1731825677,
+      stop: 1731925677,
+      initial_img_id: "",
+      id: 1,
     },
     {
-      "title": "Rocks",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      "lat": 0.0,
-      "lng": 0.0,
-      "start": 1731825677,
-      "stop": 1731925677,
-      "initial_img_id": "",
-      "id": 1,
+      title: "Rocks",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      lat: 0.0,
+      lng: 0.0,
+      start: 1731825677,
+      stop: 1731925677,
+      initial_img_id: "",
+      id: 1,
     },
     {
-      "title": "Rocks",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      "lat": 0.0,
-      "lng": 0.0,
-      "start": 1731825677,
-      "stop": 1731925677,
-      "initial_img_id": "",
-      "id": 1,
+      title: "Rocks",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
+      lat: 0.0,
+      lng: 0.0,
+      start: 1731825677,
+      stop: 1731925677,
+      initial_img_id: "",
+      id: 1,
     },
   ]);
 
@@ -84,18 +91,20 @@
   let start_lng = $state(0.0);
 
   onMount(async () => {
-    navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
-      start_lat = position.coords.latitude;
-      start_lng = position.coords.longitude;
-      loaded = true;
-    });
+    navigator.geolocation.getCurrentPosition(
+      (position: GeolocationPosition) => {
+        start_lat = position.coords.latitude;
+        start_lng = position.coords.longitude;
+        loaded = true;
+      },
+    );
 
-    // (async function () {
-    //   let res = await fetch(
-    //     `${import.meta.env.VITE_BASE_URL}/get?request_type=get_nearby_recent_tasks&lat=${start_lat}&lng=${start_lng}`,
-    //   );
-    //   destinationData = await res.json();
-    // })();
+    (async function () {
+      let res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/get?request_type=get_nearby_recent_tasks&lat=${start_lat}&lng=${start_lng}`,
+      );
+      destinationData = await res.json();
+    })();
   });
 </script>
 
@@ -103,19 +112,24 @@
   <h1 class="block m-2 text-6xl text-black font-bold">spontani</h1>
   <p class="text-lg text-primary-900">unite through adventure</p>
 
-  <button 
-  class="absolute top-4 right-4 bg-primary-500 text-white font-bold rounded-full h-12 w-12 flex items-center justify-center hover:bg-primary-700 focus:outline-none"
-  aria-label="Add"
-  onclick={() => window.location.href = '/form'}
->
-  +
-</button>
-
+  <button
+    class="absolute top-4 right-4 bg-primary-500 text-white font-bold rounded-full h-12 w-12 flex items-center justify-center hover:bg-primary-700 focus:outline-none"
+    aria-label="Add"
+    onclick={() => (window.location.href = "/form")}
+  >
+    +
+  </button>
 </div>
 
 <main class="m-4">
   {#if loaded}
-    <MapComponent markers={[{lat: 32.98599729543064, lng: -96.7508045889115, title: 'hello'}]} start_lat={start_lat} start_lng={start_lng}/>
+    <MapComponent
+      markers={[
+        { lat: 32.98599729543064, lng: -96.7508045889115, title: "hello" },
+      ]}
+      {start_lat}
+      {start_lng}
+    />
   {/if}
 
   <div class="my-12">
@@ -123,9 +137,19 @@
       <h2 class="my-2 mt-2 text-3xl font-bold">current destinations</h2>
       <p>where will you go today?</p>
     </header>
-    <div class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center">
+    <div
+      class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center"
+    >
       {#each destinationData as dest}
-        <DestinationCard description={dest.description} endDate={dest.stop * 1000} img={tmpImage} lat={dest.lat} lng={dest.lng} name={dest.title} id={dest.id} />
+        <DestinationCard
+          description={dest.description}
+          endDate={dest.stop * 1000}
+          img={tmpImage}
+          lat={dest.lat}
+          lng={dest.lng}
+          name={dest.title}
+          id={dest.id}
+        />
       {/each}
     </div>
   </div>
@@ -133,11 +157,24 @@
   <div class="my-12">
     <header class="my-4">
       <h2 class="my-2 mt-2 text-3xl font-bold">past destinations</h2>
-      <p>the deadline for going to these is over; now you can see everyone's pictures!</p>
+      <p>
+        the deadline for going to these is over; now you can see everyone's
+        pictures!
+      </p>
     </header>
-    <div class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center">
+    <div
+      class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center"
+    >
       {#each Array(3) as _}
-        <DestinationCard description="foo bar eggs spam"  endDate={0} img={tmpImage} lat={0.0} lng={0.0} name="placeholder" id={1} />
+        <DestinationCard
+          description="foo bar eggs spam"
+          endDate={0}
+          img={tmpImage}
+          lat={0.0}
+          lng={0.0}
+          name="placeholder"
+          id={1}
+        />
       {/each}
     </div>
   </div>
