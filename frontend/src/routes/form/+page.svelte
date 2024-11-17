@@ -44,7 +44,7 @@
           });
 
           /*
-        const response = await fetch("https://uelhkpgmp9.execute-api.us-east-1.amazonaws.com/prod/post?request_type=create_task", {
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/post?request_type=create_task`, {
           method: "POST",
           body: JSON.stringify({
             title: form_data.title,

@@ -17,7 +17,7 @@
 
   onMount(async () => {
     const loader = new Loader({
-      apiKey: await (await (await fetch('https://uelhkpgmp9.execute-api.us-east-1.amazonaws.com/prod/get?request_type=get_google_maps_key')).blob()).text(),
+      apiKey: await (await (await fetch(`${import.meta.env.VITE_BASE_URL}/get?request_type=get_google_maps_key`)).blob()).text(),
       version: 'weekly',
       libraries: ['marker']
     });
