@@ -3,7 +3,7 @@
 
   let files: FileList | undefined = $state();
 
-  let { openModal = $bindable(), name }: { openModal: boolean; name: string } =
+  let { openModal = $bindable(), taskId, name }: { openModal: boolean; taskId: number, name: string } =
     $props();
 
   async function onSubmit(event: Event) {
@@ -12,7 +12,7 @@
     let file = files[0];
 
     await fetch(
-      `${import.meta.env.VITE_BASE_URL}/post?request_type=upload_image&task_id=1234&caption=testing`,
+      `${import.meta.env.VITE_BASE_URL}/post?request_type=upload_image&task_id=${taskId}&caption=testing`,
       {
         method: "POST",
         body: file,
