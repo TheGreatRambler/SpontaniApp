@@ -177,12 +177,6 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				Body:       "Missing required parameter: body",
 			}, nil
 		}
-		if !request.IsBase64Encoded {
-			return events.APIGatewayProxyResponse{
-				StatusCode: 400,
-				Body:       "Request must be base64 encoded",
-			}, nil
-		}
 
 		taskId, exists := request.QueryStringParameters["task_id"]
 		if !exists {
