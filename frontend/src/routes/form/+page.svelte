@@ -140,8 +140,10 @@
             <Helper>SVG, PNG, JPG or GIF (MAX. 800x400px).</Helper>
 
             <div class="flex space-x-4 justify-center">
-                <Button class="bg-primary-600 w-1/4" onclick={on_form_submit}>Cancel</Button>
-                <Button class="bg-primary-600 w-1/4" onclick={on_form_submit}>Submit</Button>
+                <Button class="bg-primary-600 w-1/4"
+                onclick={() => window.location.href = '/'}>Cancel</Button>
+                <Button class="bg-primary-600 w-1/4"
+                onclick={() => window.location.href = '/completion'}>Submit</Button>
             </div>
         </form>
     </div>
