@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"slices"
 	"strconv"
 	"time"
 
@@ -104,17 +105,14 @@ func getLatLngParameters(request events.APIGatewayProxyRequest) (float64, float6
 }
 
 func findClosestWaypoint(lat, lng float64) (string, string, error) {
-	// Define the request for Nearby Search
-	req := &maps.NearbySearchRequest{
+	// Execute the Nearby Search request
+	resp, err := mapsClient.NearbySearch(context.Background(), &maps.NearbySearchRequest{
 		Location: &maps.LatLng{
 			Lat: lat,
 			Lng: lng,
 		},
 		Radius: 5000, // Search within 5km radius
-	}
-
-	// Execute the Nearby Search request
-	resp, err := mapsClient.NearbySearch(context.Background(), req)
+	})
 	if err != nil {
 		return "", "", fmt.Errorf("failed to perform nearby search: %w", err)
 	}
@@ -124,10 +122,20 @@ func findClosestWaypoint(lat, lng float64) (string, string, error) {
 		return "", "", fmt.Errorf("no waypoints found near the specified location")
 	}
 
-	// Extract the name and address of the closest waypoint
-	closest := resp.Results[0]
+	// Iterate through results and find the first one not a locality
+	var closest maps.PlacesSearchResult
+	for _, result := range resp.Results {
+		has_locality := slices.ContainsFunc(result.Types, func(t string) bool {
+			return t == "locality"
+		})
 
-	return closest.Name, closest.FormattedAddress, nil
+		if !has_locality {
+			closest = result
+			break
+		}
+	}
+
+	return closest.Name, closest.Vicinity, nil
 }
 
 type RowScanner interface {
