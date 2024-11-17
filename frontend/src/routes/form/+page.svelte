@@ -20,7 +20,7 @@
         description: "",
         lat: 0,
         lng: 0,
-        initial_image_id: 0,
+        initial_img_id: 0,
     };
 
     let lat = $state(0.0);
@@ -71,7 +71,7 @@
             )
         ).json();
 
-        form_data.initial_image_id = res.id;
+        form_data.initial_img_id = res.id;
     };
 
     let on_form_submit = async () => {
@@ -90,7 +90,7 @@
                                 selectedStartDate!.getTime() / 1000,
                             ),
                             stop: Math.floor(selectedEndDate!.getTime() / 1000),
-                            initial_image_id: form_data.initial_image_id,
+                            initial_img_id: form_data.initial_img_id,
                         }),
                     },
                 )
@@ -98,13 +98,13 @@
 
             // Update image's task ID
             await fetch(
-                `${import.meta.env.VITE_BASE_URL}/post?request_type=update_image&id=${form_data.initial_image_id}&task_id=${res.id}`,
+                `${import.meta.env.VITE_BASE_URL}/post?request_type=update_image&id=${form_data.initial_img_id}&task_id=${res.id}`,
                 {
                     method: "POST",
                 },
             );
 
-            window.location.href = "/completion";
+            //window.location.href = "/completion";
         }
     };
 </script>
