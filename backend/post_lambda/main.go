@@ -17,6 +17,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"googlemaps.github.io/maps"
+	"honnef.co/go/spew"
 )
 
 var mapsClient *maps.Client
@@ -210,6 +211,8 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				Body:       fmt.Sprintf("Failed to insert image: %v", err),
 			}, nil
 		}
+
+		spew.Dump(request)
 
 		// Upload image to S3
 		_, err = s3Client.PutObject(&s3.PutObjectInput{
