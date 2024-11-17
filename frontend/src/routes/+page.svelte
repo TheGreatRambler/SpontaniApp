@@ -93,7 +93,30 @@
 
 <main class="m-4">
   {#if loaded}
-    <MapComponent {markers} {start_lat} {start_lng} {map_center} />
+    <MapComponent
+      markers={destinationData
+        .map((task) => {
+          return {
+            lat: task.lat,
+            lng: task.lng,
+            title: task.title,
+            color: "#4ECDC4",
+          };
+        })
+        .concat(
+          completedDestinationData.map((task) => {
+            return {
+              lat: task.lat,
+              lng: task.lng,
+              title: task.title,
+              color: "#FF6B6B",
+            };
+          }),
+        )}
+      {start_lat}
+      {start_lng}
+      {map_center}
+    />
   {/if}
 
   <div class="my-12">
