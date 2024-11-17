@@ -336,6 +336,36 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				"Content-Type": "application/json",
 			},
 		}, nil
+	case "get_completed_tasks":
+		rows, err := dbConn.Query(context.Background(), `
+			SELECT id, title, location_name, location_address,
+				description, lat, lng, uploaded,
+				start, stop, initial_img_id, likes
+				FROM task WHERE stop < $1 ORDER BY stop DESC
+		`, time.Now())
+		if err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 500,
+				Body:       fmt.Sprintf("Database error: %v", err),
+				Headers: map[string]string{
+					"Content-Type": "text/plain",
+				},
+			}, nil
+		}
+		defer rows.Close()
+
+		tasks_json, res := buildTaskJSON(rows)
+		if res != nil {
+			return *res, nil
+		}
+
+		return events.APIGatewayProxyResponse{
+			StatusCode: 200,
+			Body:       tasks_json,
+			Headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+		}, nil
 	case "get_popular_tasks":
 		rows, err := dbConn.Query(context.Background(), `
 			SELECT id, title, location_name, location_address,
