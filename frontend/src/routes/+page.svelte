@@ -125,7 +125,7 @@
     </header>
     <div class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center">
       {#each destinationData as dest}
-        <DestinationCard description={dest.description} endDate={dest.stop * 1000} img={tmpImage} lat={dest.lat} lng={dest.lng} name={dest.title} />
+        <DestinationCard description={dest.description} endDate={dest.stop * 1000} img={tmpImage} lat={dest.lat} lng={dest.lng} name={dest.title} id={dest.id} />
       {/each}
     </div>
   </div>
