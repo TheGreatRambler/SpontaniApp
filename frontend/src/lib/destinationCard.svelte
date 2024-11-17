@@ -37,4 +37,4 @@
   </p>
   <p class="text-gray-900">{description}</p>
 </Card>
-<SubmitModal bind:openModal taskId={id} {name} />
+<SubmitModal bind:openModal taskId={id} {name} showSlidesLink={true} />

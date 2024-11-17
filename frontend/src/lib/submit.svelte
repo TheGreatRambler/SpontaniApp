@@ -9,7 +9,8 @@
     openModal = $bindable(),
     taskId,
     name,
-  }: { openModal: boolean; taskId: number; name: string } = $props();
+    showSlidesLink
+  }: { openModal: boolean; taskId: number; name: string, showSlidesLink: boolean } = $props();
 
   async function onSubmit(event: Event) {
     event.preventDefault();
@@ -35,9 +36,11 @@
   <h3 class="mb-4 text-xl font-bold text-black dark:text-white">
     take a selfie at {name.toLowerCase()}
   </h3>
-  <h3 class="text-orange-600 underline mb-4 text-xl font-bold">
-    <a href={`/submit/${taskId}`}>View submissions</a>
-  </h3>
+  {#if showSlidesLink}
+    <a class="block text-orange-600 underline mb-4 text-xl font-bold" href={`/submit/${taskId}`}>
+      View submissions
+    </a>
+  {/if}
 
   <Label class="space-y-2">
     <span>Caption</span>
