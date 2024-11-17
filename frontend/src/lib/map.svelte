@@ -1,12 +1,14 @@
 <script lang='ts'>
   import { onMount } from 'svelte';
+  import type { Snippet } from 'svelte';
   import { Loader } from '@googlemaps/js-api-loader';
 
   let props: {
+    children?: Snippet
     markers: { lat: number; lng: number; title: string }[];
     start_lat: number;
     start_lng: number;
-    map_center: ((map: google.maps.Map) => void) | undefined;
+    map_center?: ((map: google.maps.Map) => void);
   } = $props();
 
   let mapElement: HTMLElement;
@@ -52,4 +54,12 @@
   });
 </script>
 
-<div bind:this={mapElement} class="m-auto w-full max-w-[800px] aspect-video"></div>
+<div class="relative m-auto w-full max-w-[800px] aspect-video">
+  <!-- The map container -->
+  <div bind:this={mapElement} class="absolute inset-0"></div>
+
+  <!-- Children rendered on top of the map -->
+  <div class="absolute inset-0 pointer-events-none">
+      {@render props.children?.()}
+  </div>
+</div>

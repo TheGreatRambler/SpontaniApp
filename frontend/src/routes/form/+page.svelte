@@ -17,13 +17,10 @@
       });
     });
 
-    let markers = [
-        { lat: lat, lng: lng, title: 'hello' }
-    ];
     let map_center = (map: google.maps.Map) => {
         let center = map.getCenter();
-        markers = [{ lat: center?.lat()!, lng: center?.lng()!, title: 'changing' }];
-        console.log(markers);
+        lat = center!.lat();
+        lng = center!.lng();
     };
 </script>
 
@@ -64,7 +61,9 @@
                 <Label class="space-y-2">
                     <h3 class="text-xl font-medium text-gray-900 dark:text-white">Location</h3>
                 </Label>
-                <MapComponent {markers} start_lat={lat} start_lng={lng} map_center={map_center}/>
+                <MapComponent markers={[]} start_lat={lat} start_lng={lng} map_center={map_center}>
+                    <div class="absolute top-1/2 left-1/2 w-4 h-4 bg-red-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+                </MapComponent>
         </form>
     </div>
 </div>
