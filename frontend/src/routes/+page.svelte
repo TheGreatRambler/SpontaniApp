@@ -83,7 +83,7 @@
     </header>
     <div class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center">
       {#each destinationData as dest}
-        <DestinationCard img={tmpImage} description={dest.description} endDate={dest.stop} name={dest.title} />
+        <DestinationCard description={dest.description} endDate={dest.stop * 1000} img={tmpImage} lat={dest.lat} lng={dest.lng} name={dest.title} />
       {/each}
     </div>
   </div>
@@ -95,7 +95,7 @@
     </header>
     <div class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center">
       {#each Array(3) as _}
-        <DestinationCard img={tmpImage} description="foo bar eggs spam" endDate={0} name="placeholder" />
+        <DestinationCard description="foo bar eggs spam"  endDate={0} img={tmpImage} lat={0.0} lng={0.0} name="placeholder" />
       {/each}
     </div>
   </div>

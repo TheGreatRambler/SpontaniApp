@@ -3,7 +3,16 @@
 
   import SubmitModal from '$lib/submit.svelte';
 
-  let { img, description, endDate, name }: {img: any, description: string, endDate: number, name: string} = $props();
+  interface Destination {
+    description: string,
+    endDate: number,
+    img: any,
+    lat: number,
+    lng: number,
+    name: string
+  };
+
+  let { description, endDate, img, lat, lng, name }: Destination = $props();
   let openModal: boolean = $state(false);
 
   const tzOffset = new Date().getTimezoneOffset() * 60000;
