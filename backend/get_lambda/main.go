@@ -237,10 +237,9 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		rows, err := dbConn.Query(context.Background(), `
 			SELECT id, title, location_name, location_address,
 				description, lat, lng, uploaded,
-				start, stop, initial_img_id, likes,
-				point($1, $2) <@> (point(lat, lng)::point) as distance
+				start, stop, initial_img_id, likes
 				FROM task WHERE stop > now()
-				ORDER BY distance ASC
+				ORDER BY (point($1, $2) <@> (point(lat, lng)::point)) ASC
 		`, lat, lng)
 		if err != nil {
 			return events.APIGatewayProxyResponse{
