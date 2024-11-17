@@ -9,12 +9,11 @@
     const formData = new FormData(event.target);
 
     const bytes = await (formData.get("file")).arrayBuffer();
-    console.log(bytes);
 
-    //await fetch('https://uelhkpgmp9.execute-api.us-east-1.amazonaws.com/prod/post?request_type=upload_image&task_id=1234&caption=testing', {
-    //  method: 'POST',
-    //  body: bytes,
-    //});
+    await fetch(`${import.meta.env.VITE_BASE_URL}/post?request_type=upload_image&task_id=1234&caption=testing`, {
+      method: 'POST',
+      body: bytes,
+    });
   }
 
 </script>
