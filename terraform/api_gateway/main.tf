@@ -1,6 +1,7 @@
 # Create the API Gateway
 resource "aws_api_gateway_rest_api" "api_gateway" {
   name = var.api_gateway_name
+  binary_media_types = ["image/jpeg", "image/png", "image/webp"] 
 }
 
 # Create a resource for each Lambda with its specified prefix
