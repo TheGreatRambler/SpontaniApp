@@ -13,10 +13,12 @@
   let start_lat = $state(0.0);
   let start_lng = $state(0.0);
 
-  let get_recent_tasks = async (lat: number, lng: number) => {
-    let res = await fetch(
-      `${import.meta.env.VITE_BASE_URL}/get?request_type=get_nearby_recent_tasks&lat=${lat}&lng=${lng}`,
-    );
+  let markers = $state([] as any[]);
+
+  // { lat: 32.98599729543064, lng: -96.7508045889115, title: "hello" }
+
+  let get_recent_tasks = async (query: string) => {
+    let res = await fetch(`${import.meta.env.VITE_BASE_URL}${query}`);
     let taskData = await res.json();
 
     let newDestinationData: any[] = [];
@@ -35,7 +37,7 @@
       });
     }
 
-    destinationData = newDestinationData;
+    return newDestinationData;
   };
 
   onMount(async () => {
@@ -46,32 +48,15 @@
         loaded = true;
 
         (async function () {
-          await get_recent_tasks(start_lat, start_lng);
+          destinationData = await get_recent_tasks(
+            `/get?request_type=get_nearby_recent_tasks&lat=${start_lat}&lng=${start_lng}`,
+          );
         })();
 
         (async function () {
-          let res = await fetch(
-            `${import.meta.env.VITE_BASE_URL}/get?request_type=get_completed_tasks`,
+          completedDestinationData = await get_recent_tasks(
+            "/get?request_type=get_completed_tasks",
           );
-          let tackCompData = await res.json();
-
-          let newCompleteDestinationData: any[] = [];
-          for (let task of tackCompData) {
-            let initial_image_url = (
-              await (
-                await fetch(
-                  `${import.meta.env.VITE_BASE_URL}/post?request_type=get_presigned_url&id=${task.initial_img_id}`,
-                  { method: "POST" },
-                )
-              ).json()
-            ).url;
-            newCompleteDestinationData.push({
-              ...task,
-              initial_image_url: initial_image_url,
-            });
-          }
-
-          completedDestinationData = newCompleteDestinationData;
         })();
       },
     );
@@ -86,7 +71,9 @@
       last_update = timestamp;
 
       // Trigger new search
-      await get_recent_tasks(center!.lat(), center!.lng());
+      destinationData = await get_recent_tasks(
+        `/get?request_type=get_nearby_recent_tasks&lat=${center!.lat()}&lng=${center!.lng()}`,
+      );
     }
   };
 </script>
@@ -106,14 +93,7 @@
 
 <main class="m-4">
   {#if loaded}
-    <MapComponent
-      markers={[
-        { lat: 32.98599729543064, lng: -96.7508045889115, title: "hello" },
-      ]}
-      {start_lat}
-      {start_lng}
-      {map_center}
-    />
+    <MapComponent {markers} {start_lat} {start_lng} {map_center} />
   {/if}
 
   <div class="my-12">
