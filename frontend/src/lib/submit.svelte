@@ -9,8 +9,13 @@
     openModal = $bindable(),
     taskId,
     name,
-    showSlidesLink
-  }: { openModal: boolean; taskId: number; name: string, showSlidesLink: boolean } = $props();
+    showSlidesLink,
+  }: {
+    openModal: boolean;
+    taskId: number;
+    name: string;
+    showSlidesLink: boolean;
+  } = $props();
 
   async function onSubmit(event: Event) {
     event.preventDefault();
@@ -36,11 +41,6 @@
   <h3 class="mb-4 text-xl font-bold text-black dark:text-white">
     take a selfie at {name.toLowerCase()}
   </h3>
-  {#if showSlidesLink}
-    <a class="block text-orange-600 underline mb-4 text-xl font-bold" href={`/submit/${taskId}`}>
-      View submissions
-    </a>
-  {/if}
 
   <Label class="space-y-2">
     <span>Caption</span>
@@ -58,6 +58,15 @@
     <!-- whee duplication go brr -->
     <!-- if this wasn't a hackathon project, I woulda made the component -->
     <Fileupload bind:files name="file" id="with_helper" class="mb-2" />
-    <Button type="submit" class="w-full mt-2">Upload</Button>
+    <div class="flex space-x-4 justify-center">
+      {#if showSlidesLink}
+        <Button
+          class="w-full mt-2"
+          onclick={() => (window.location.href = `/submit/${taskId}`)}
+          >View Submissions</Button
+        >
+      {/if}
+      <Button type="submit" class="w-full mt-2">Upload</Button>
+    </div>
   </form>
 </Modal>
