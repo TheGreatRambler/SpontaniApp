@@ -2,9 +2,17 @@
     import { onMount } from 'svelte';
     import { Card, Button, Label, Input, Datepicker, Fileupload, Helper } from 'flowbite-svelte';
     import MapComponent from '$lib/map.svelte';
-    let selectedDate: Date | null = null;
-
     let loaded = $state(false);
+
+    let form_data = {
+      title: "",
+      description: "",
+      lat: 0,
+      lng: 0,
+      start: new Date(),
+      stop: new Date(),
+      initial_image_id: 0,
+    };
 
     let lat = $state(0.0);
     let lng = $state(0.0);
@@ -24,18 +32,30 @@
     };
 
     let on_form_submit = () => {
+        console.log({
+            title: form_data.title,
+            description: form_data.description,
+            lat: lat,
+            lng: lng,
+            start: Math.floor(form_data.start.getTime() / 1000),
+            stop: Math.floor(form_data.stop.getTime() / 1000),
+            initial_image_id: 0,
+          });
+
+          /*
         const response = await fetch("https://uelhkpgmp9.execute-api.us-east-1.amazonaws.com/prod/post?request_type=create_task", {
           method: "POST",
-          body: {
-            title: "",
-            description: "",
-            lat: 0,
-            lng: 0,
-            start: new Date(),
-            stop: new Date(),
+          body: JSON.stringify({
+            title: form_data.title,
+            description: form_data.description,
+            lat: lat,
+            lng: lng,
+            start: Math.floor(form_data.start.getTime() / 1000),
+            stop: Math.floor(form_data.stop.getTime() / 1000),
             initial_image_id: 0,
-          },
+          }),
         });
+        */
 
     };
 </script>
@@ -48,18 +68,25 @@
             <Label class="space-y-2">
                 <span>Title</span>
                 <Input 
-                    type="text" name="title" placeholder="Day at the Beach" required class="bg-white dark:bg-primary-600 border dark-black dark:border-primary-500 text-gray-900 dark:text-white dark:placeholder-gray-400 rounded-lg p-2 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-300"/>
+                    bind:value={form_data.title} type="text" name="title" placeholder="Day at the Beach" required class="bg-white dark:bg-primary-600 border dark-black dark:border-primary-500 text-gray-900 dark:text-white dark:placeholder-gray-400 rounded-lg p-2 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-300"/>
             </Label>
             
             <Label class="space-y-2">
                 <span>Description</span>
-                <textarea id="description" name="description" placeholder="Create sand castles at the beach." required class="block w-full p-2 text-gray-900 border dark:border-primary-500 rounded-lg bg-white dark:bg-primary-600 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-300"></textarea>
+                <textarea bind:value={form_data.description} id="description" name="description" placeholder="Create sand castles at the beach." required class="block w-full p-2 text-gray-900 border dark:border-primary-500 rounded-lg bg-white dark:bg-primary-600 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-300"></textarea>
             </Label>
 
             <Label class="space-y-2">
-                <span>Choose a Date</span>
+                <span>Start Date</span>
                 <div class="mb-4 md:w-1/2">
-                    <Datepicker bind:value={selectedDate} inputClass="bg-white dark:bg-primary-600 border border-primary-300 dark:border-primary-500" />
+                    <Datepicker bind:value={form_data.start} inputClass="bg-white dark:bg-primary-600 border border-primary-300 dark:border-primary-500" />
+                </div>
+            </Label>
+
+            <Label class="space-y-2">
+                <span>End Date</span>
+                <div class="mb-4 md:w-1/2">
+                    <Datepicker bind:value={form_data.stop} inputClass="bg-white dark:bg-primary-600 border border-primary-300 dark:border-primary-500" />
                 </div>
             </Label>
             
@@ -67,7 +94,7 @@
             <Fileupload id="with_helper" class="mb-2" />
             <Helper>SVG, PNG, JPG or GIF (MAX. 800x400px).</Helper>
 
-            <Button class="bg-primary-600">Submit</Button>
+            <Button class="bg-primary-600" onclick={on_form_submit}>Submit</Button>
         </form>
     </div>
 
