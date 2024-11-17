@@ -48,16 +48,20 @@ resource "aws_iam_role_policy_attachment" "s3_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
-resource "null_resource" "run_build_script_get" {
-  provisioner "local-exec" {
-    command = "cd ../backend/get_lambda;./build.sh"
-  }
-}
-
 resource "aws_s3_bucket" "img_bucket" {
   bucket = "spontaniapp-imgs"
   tags = {
     Name = "Image Bucket"
+  }
+}
+
+resource "null_resource" "run_build_script_get" {
+  triggers = {
+    always_run = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = "cd ../backend/get_lambda;./build.sh"
   }
 }
 
@@ -73,6 +77,10 @@ module "get_lambda" {
 }
 
 resource "null_resource" "run_build_script_post" {
+  triggers = {
+    always_run = timestamp()
+  }
+
   provisioner "local-exec" {
     command = "cd ../backend/post_lambda;./build.sh"
   }
@@ -90,6 +98,10 @@ module "post_lambda" {
 }
 
 resource "null_resource" "run_build_script_search" {
+  triggers = {
+    always_run = timestamp()
+  }
+
   provisioner "local-exec" {
     command = "cd ../backend/search_lambda;./build.sh"
   }
