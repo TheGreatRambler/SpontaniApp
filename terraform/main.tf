@@ -48,7 +48,7 @@ resource "aws_iam_role_policy_attachment" "s3_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
-resource "null_resource" "run_build_script" {
+resource "null_resource" "run_build_script_get" {
   provisioner "local-exec" {
     command = "cd ../backend/get_lambda;./build.sh"
   }
@@ -65,6 +65,40 @@ module "get_lambda" {
     role_arn = aws_iam_role.lambda_role.arn
 }
 
+resource "null_resource" "run_build_script_post" {
+  provisioner "local-exec" {
+    command = "cd ../backend/post_lambda;./build.sh"
+  }
+}
+
+module "post_lambda" {
+    source = "./lambda"
+    function_name = "post"
+    zip_path = "../backend/post_lambda/getLambda.zip"
+    env_vars = local.env_vars
+    architecture = "arm64"
+    handler = "bootstrap"
+    runtime = "provided.al2"
+    role_arn = aws_iam_role.lambda_role.arn
+}
+
+resource "null_resource" "run_build_script_search" {
+  provisioner "local-exec" {
+    command = "cd ../backend/search_lambda;./build.sh"
+  }
+}
+
+module "search_lambda" {
+    source = "./lambda"
+    function_name = "search"
+    zip_path = "../backend/search_lambda/getLambda.zip"
+    env_vars = local.env_vars
+    architecture = "arm64"
+    handler = "bootstrap"
+    runtime = "provided.al2"
+    role_arn = aws_iam_role.lambda_role.arn
+}
+
 module "api_gateway" {
     source = "./api_gateway"
     api_gateway_name = "spontaniapp"
@@ -73,6 +107,16 @@ module "api_gateway" {
             lambda_arn = module.get_lambda.lambda_arn
             methods = ["GET"]
             prefix = "get"
+        },
+        "post" = {
+            lambda_arn = module.post_lambda.lambda_arn
+            methods = ["POST"]
+            prefix = "post"
+        },
+        "search" = {
+            lambda_arn = module.search_lambda.lambda_arn
+            methods = ["GET"]
+            prefix = "search"
         },
     }
 }
