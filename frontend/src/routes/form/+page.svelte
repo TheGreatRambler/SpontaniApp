@@ -36,7 +36,7 @@
         let timestamp = Date.now();
         if (timestamp - last_update > 1000 * 1) {
             last_update = timestamp;
-            live_place_name_element.innerHTML = await (await fetch(`https://nrfo7g433c.execute-api.us-east-1.amazonaws.com/prod/get?request_type=location_to_place_name&lat=${lat}&lng=${lng}`)).text();
+            live_place_name_element.innerHTML = await (await fetch(`${import.meta.env.VITE_BASE_URL}/get?request_type=location_to_place_name&lat=${lat}&lng=${lng}`)).text();
         }
     };
 
