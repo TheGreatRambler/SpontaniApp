@@ -241,7 +241,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 		return events.APIGatewayProxyResponse{
 			StatusCode: 200,
-			Body:       string("{\"id\": " + fmt.Sprint(img_id) + "}"),
+			Body:       fmt.Sprintf("\"id\":%d}", img_id),
 		}, nil
 
 	default:
