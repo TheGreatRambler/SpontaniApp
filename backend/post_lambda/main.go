@@ -213,10 +213,9 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 		// Upload image to S3
 		_, err = s3Client.PutObject(&s3.PutObjectInput{
-			Bucket:      aws.String("spontaniapp-imgs"),
-			Key:         aws.String(fmt.Sprintf("%d", img_id)),
-			Body:        bytes.NewReader([]byte(request.Body)),
-			ContentType: aws.String("image/jpeg"),
+			Bucket: aws.String("spontaniapp-imgs"),
+			Key:    aws.String(fmt.Sprintf("%d", img_id)),
+			Body:   bytes.NewReader([]byte(request.Body)),
 		})
 
 		if err != nil {
@@ -228,7 +227,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 		return events.APIGatewayProxyResponse{
 			StatusCode: 200,
-			Body:       fmt.Sprintf("\"id\":%d}", img_id),
+			Body:       fmt.Sprintf("{\"id\":%d}", img_id),
 		}, nil
 
 	case "update_image":
