@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -215,20 +214,11 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 		spew.Dump(request)
 
-		// Decode image back to bytes
-		decoded_image, err := base64.StdEncoding.DecodeString(request.Body)
-		if err != nil {
-			return events.APIGatewayProxyResponse{
-				StatusCode: 500,
-				Body:       fmt.Sprintf("Failed to convert image to base64: %v", err),
-			}, nil
-		}
-
 		// Upload image to S3
 		_, err = s3Client.PutObject(&s3.PutObjectInput{
 			Bucket: aws.String("spontaniapp-imgs"),
 			Key:    aws.String(fmt.Sprintf("%d", img_id)),
-			Body:   bytes.NewReader(decoded_image),
+			Body:   bytes.NewReader([]byte(request.Body)),
 		})
 
 		if err != nil {
