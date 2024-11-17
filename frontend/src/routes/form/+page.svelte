@@ -111,6 +111,8 @@
                         },
                     );
 
+                    window.location.href = "/";
+
                     clearInterval(interval_id);
                 }
             }, 500);
