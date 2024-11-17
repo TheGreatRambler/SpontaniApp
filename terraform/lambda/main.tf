@@ -5,7 +5,7 @@ resource "aws_lambda_function" "this" {
   runtime       = var.runtime
 
   filename      = var.zip_path
-  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+  source_code_hash = filesha256(var.zip_path)
 
   environment {
     variables = var.env_vars

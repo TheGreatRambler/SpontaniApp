@@ -8,7 +8,6 @@ variable "lambda_configs" {
   type = map(object({
     lambda_arn = string
     methods    = list(string)
-    authorized_methods = list(string)
     prefix     = string
   }))
 }
