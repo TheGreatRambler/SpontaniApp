@@ -1,29 +1,16 @@
 <script>
     import { Card, Button, Label, Input, Datepicker, Fileupload, Helper } from 'flowbite-svelte';
+    import MapComponent from '$lib/map.svelte';
     let selectedDate = null;
-    let map;
 
     const location = {
         lat: 32.9857,
         lng: 96.7502
     };
 
-    import { onMount } from 'svelte';
-
-    onMount(() => {
-        if (typeof google !== 'undefined') {
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: location,
-                zoom: 8
-            });
-        }
-
-        new google.maps.Marker({
-            position: location,
-            map: map,
-            title: 'London'
-        });
-    });
+    const markers = [
+        { lat: 32.98599729543064, lng: -96.7508045889115, title: 'hello' }
+    ];
 </script>
 
 <div class="flex min-h-screen dark:bg-primary-300">
@@ -63,7 +50,7 @@
                 <Label class="space-y-2">
                     <h3 class="text-xl font-medium text-gray-900 dark:text-white">Location</h3>
                 </Label>
-                <div id="map" class="h-96 w-full"></div>
+                <MapComponent {markers}/>
         </form>
     </div>
 </div>
