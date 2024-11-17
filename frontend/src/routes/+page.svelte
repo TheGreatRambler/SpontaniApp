@@ -96,15 +96,15 @@
         start_lat = position.coords.latitude;
         start_lng = position.coords.longitude;
         loaded = true;
+
+        (async function () {
+          let res = await fetch(
+            `${import.meta.env.VITE_BASE_URL}/get?request_type=get_nearby_recent_tasks&lat=${start_lat}&lng=${start_lng}`,
+          );
+          destinationData = await res.json();
+        })();
       },
     );
-
-    (async function () {
-      let res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/get?request_type=get_nearby_recent_tasks&lat=${start_lat}&lng=${start_lng}`,
-      );
-      destinationData = await res.json();
-    })();
   });
 </script>
 
