@@ -22,6 +22,22 @@
         lat = center!.lat();
         lng = center!.lng();
     };
+
+    let on_form_submit = () => {
+        const response = await fetch("https://uelhkpgmp9.execute-api.us-east-1.amazonaws.com/prod/post?request_type=create_task", {
+          method: "POST",
+          body: {
+            title: "",
+            description: "",
+            lat: 0,
+            lng: 0,
+            start: new Date(),
+            stop: new Date(),
+            initial_image_id: 0,
+          },
+        });
+
+    };
 </script>
 
 <div class="flex min-h-screen dark:bg-primary-300">
