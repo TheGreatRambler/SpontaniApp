@@ -29,3 +29,9 @@ variable "env_vars" {
   description = "Environment variables to be passed to Lambda"
   default = {}
 }
+
+variable "architecture" {
+  type = string
+  description = "Architecture to be used by Lambda"
+  default = "x86_64"
+}

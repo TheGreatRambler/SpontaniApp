@@ -3,7 +3,7 @@ resource "aws_lambda_function" "this" {
   role          = var.role_arn
   handler       = var.handler
   runtime       = var.runtime
-
+  architectures = [var.architecture]
   filename      = var.zip_path
   source_code_hash = filesha256(var.zip_path)
 

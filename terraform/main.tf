@@ -59,6 +59,7 @@ module "get_lambda" {
     function_name = "get"
     zip_path = "../backend/get_lambda/getLambda.zip"
     env_vars = local.env_vars
+    architecture = "arm64"
     handler = "bootstrap"
     runtime = "provided.al2"
     role_arn = aws_iam_role.lambda_role.arn
