@@ -455,7 +455,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 			presigned_req, _ := s3Client.GetObjectRequest(&s3.GetObjectInput{
 				Bucket: aws.String("spontaniapp-imgs"),
-				Key:    aws.String(fmt.Sprintf("%d-%d", task_id, id)),
+				Key:    aws.String(fmt.Sprintf("%d", id)),
 			})
 			presigned_url, err := presigned_req.Presign(7 * 24 * time.Hour)
 			if err != nil {

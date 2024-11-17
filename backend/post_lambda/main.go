@@ -36,6 +36,33 @@ type TaskRet struct {
 	Likes        int     `json:"likes"`
 }
 
+func findClosestWaypoint(lat, lng float64) (string, string, error) {
+	// Define the request for Nearby Search
+	req := &maps.NearbySearchRequest{
+		Location: &maps.LatLng{
+			Lat: lat,
+			Lng: lng,
+		},
+		Radius: 5000, // Search within 5km radius
+	}
+
+	// Execute the Nearby Search request
+	resp, err := mapsClient.NearbySearch(context.Background(), req)
+	if err != nil {
+		return "", "", fmt.Errorf("failed to perform nearby search: %w", err)
+	}
+
+	// Check if there are any results
+	if len(resp.Results) == 0 {
+		return "", "", fmt.Errorf("no waypoints found near the specified location")
+	}
+
+	// Extract the name and address of the closest waypoint
+	closest := resp.Results[0]
+
+	return closest.Name, closest.FormattedAddress, nil
+}
+
 func init() {
 	// Load environment variables
 	err := godotenv.Load()
@@ -104,12 +131,25 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			}, nil
 		}
 
+		// Geolocate name and address
+		location_name, location_address, err := findClosestWaypoint(request.Lat, request.Lng)
+		if err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       fmt.Sprintf("Could not find closest endpoint: %v", err),
+			}, nil
+		}
+
 		err = dbConn.QueryRow(context.Background(), `
-			INSERT INTO task (title, description, lat, lng, uploaded, start, stop, initial_img_id, likes)
+			INSERT INTO task (title, location_name, location_address,
+			description, lat, lng,uploaded, start, stop,
+			initial_img_id, likes)
 			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 0)
 			RETURNING id
 		`,
 			request.Title,
+			location_name,
+			location_address,
 			request.Description,
 			request.Lat,
 			request.Lng,
@@ -127,7 +167,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 		return events.APIGatewayProxyResponse{
 			StatusCode: 200,
-			Body:       string("{\"id\": " + fmt.Sprint(task_id) + "}"),
+			Body:       fmt.Sprintf("\"id\":%d}", task_id),
 		}, nil
 	case "upload_image":
 		if request.Body == "" {
@@ -187,7 +227,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		// Upload image to S3
 		_, err = s3Client.PutObject(&s3.PutObjectInput{
 			Bucket:      aws.String("spontaniapp-imgs"),
-			Key:         aws.String(fmt.Sprintf("%d-%d", taskId, img_id)),
+			Key:         aws.String(fmt.Sprintf("%d", img_id)),
 			Body:        bytes.NewReader([]byte(request.Body)),
 			ContentType: aws.String("image/jpeg"),
 		})
