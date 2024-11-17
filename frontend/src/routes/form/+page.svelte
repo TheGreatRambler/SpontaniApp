@@ -139,9 +139,10 @@
             <Fileupload id="with_helper" class="mb-2" />
             <Helper>SVG, PNG, JPG or GIF (MAX. 800x400px).</Helper>
 
-            <Button class="bg-primary-600" onclick={on_form_submit}
-                >Submit</Button
-            >
+            <div class="flex space-x-4 justify-center">
+                <Button class="bg-primary-600 w-1/4" onclick={on_form_submit}>Cancel</Button>
+                <Button class="bg-primary-600 w-1/4" onclick={on_form_submit}>Submit</Button>
+            </div>
         </form>
     </div>
 
