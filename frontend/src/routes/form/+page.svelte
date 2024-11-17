@@ -128,7 +128,7 @@
       </svg>
     </Button>
 </Navbar>
-<div class="flex min-h-screen my-12 dark:bg-primary-300">
+<div class="flex items-center justify-center min-h-screen dark:bg-primary-300">
     <div class="w-full flex flex-col space-y-6 px-8 py-4">
         <form class="flex flex-col space-y-6 w-full" action="/">
             <h3 class="text-xl font-medium text-gray-900 dark:text-white">
