@@ -121,9 +121,9 @@ func parseTask(row RowScanner) (TaskRet, *events.APIGatewayProxyResponse) {
 	var description string
 	var lat float64
 	var lng float64
-	var uploaded int64
-	var start int64
-	var stop int64
+	var uploaded time.Time
+	var start time.Time
+	var stop time.Time
 	var initial_img_id int
 	var likes int
 	var distance float64
@@ -146,9 +146,9 @@ func parseTask(row RowScanner) (TaskRet, *events.APIGatewayProxyResponse) {
 		Description:     description,
 		Lat:             lat,
 		Lng:             lng,
-		Uploaded:        uploaded,
-		Start:           start,
-		Stop:            stop,
+		Uploaded:        uploaded.Unix(),
+		Start:           start.Unix(),
+		Stop:            stop.Unix(),
 		InitialImgId:    initial_img_id,
 		Likes:           likes,
 	}, nil
@@ -440,7 +440,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		imgs := []ImgRet{}
 		for rows.Next() {
 			var id int
-			var uploaded int64
+			var uploaded time.Time
 			var caption string
 			err := rows.Scan(&id, &uploaded, &caption)
 			if err != nil {
@@ -465,7 +465,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			imgs = append(imgs, ImgRet{
 				Id:       id,
 				TaskID:   task_id,
-				Uploaded: uploaded,
+				Uploaded: uploaded.Unix(),
 				Caption:  caption,
 				URL:      presigned_url,
 			})

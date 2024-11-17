@@ -154,9 +154,9 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			request.Description,
 			request.Lat,
 			request.Lng,
-			time.Now().Unix(),
-			request.Start,
-			request.Stop,
+			time.Now(),
+			time.Unix(request.Start, 0),
+			time.Unix(request.Stop, 0),
 			request.InitialImgId,
 		).Scan(&task_id)
 		if err != nil {
