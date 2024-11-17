@@ -54,32 +54,43 @@
         }
     };
 
-    let on_form_submit = () => {
-        if (selectedStartDate && selectedEndDate) {
-            console.log({
-                title: form_data.title,
-                description: form_data.description,
-                lat: lat,
-                lng: lng,
-                start: Math.floor(selectedStartDate!.getTime() / 1000),
-                stop: Math.floor(selectedEndDate!.getTime() / 1000),
-                initial_image_id: 0,
-            });
+    let files: FileList | undefined = $state();
+    let on_file_upload_change = async () => {
+        let file = files[0];
 
-            /*
-        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/post?request_type=create_task`, {
-          method: "POST",
-          body: JSON.stringify({
-            title: form_data.title,
-            description: form_data.description,
-            lat: lat,
-            lng: lng,
-            start: Math.floor(form_data.start.getTime() / 1000),
-            stop: Math.floor(form_data.stop.getTime() / 1000),
-            initial_image_id: 0,
-          }),
-        });
-        */
+        let res = await (
+            await fetch(
+                `${import.meta.env.VITE_BASE_URL}/post?request_type=upload_image`,
+                {
+                    method: "POST",
+                    body: file,
+                    headers: {
+                        "Content-Type": file.type,
+                    },
+                },
+            )
+        ).json();
+
+        form_data.initial_image_id = res.id;
+    };
+
+    let on_form_submit = async () => {
+        if (selectedStartDate && selectedEndDate) {
+            await fetch(
+                `${import.meta.env.VITE_BASE_URL}/post?request_type=create_task`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        title: form_data.title,
+                        description: form_data.description,
+                        lat: lat,
+                        lng: lng,
+                        start: Math.floor(selectedStartDate!.getTime() / 1000),
+                        stop: Math.floor(selectedEndDate!.getTime() / 1000),
+                        initial_image_id: form_data.initial_image_id,
+                    }),
+                },
+            );
         }
     };
 </script>
@@ -136,14 +147,24 @@
             </Label>
 
             <Label for="with_helper" class="space-y-2">Upload Image</Label>
-            <Fileupload id="with_helper" class="mb-2" />
+            <Fileupload
+                bind:files
+                onchange={on_file_upload_change}
+                id="with_helper"
+                class="mb-2"
+            />
             <Helper>SVG, PNG, JPG or GIF (MAX. 800x400px).</Helper>
 
             <div class="flex space-x-4 justify-center">
-                <Button class="bg-primary-600 w-1/4"
-                onclick={() => window.location.href = '/'}>Cancel</Button>
-                <Button class="bg-primary-600 w-1/4"
-                onclick={() => window.location.href = '/completion'}>Submit</Button>
+                <Button
+                    class="bg-primary-600 w-1/4"
+                    onclick={() => (window.location.href = "/")}>Cancel</Button
+                >
+                <Button
+                    class="bg-primary-600 w-1/4"
+                    onclick={() => (window.location.href = "/completion")}
+                    >Submit</Button
+                >
             </div>
         </form>
     </div>
