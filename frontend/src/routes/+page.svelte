@@ -142,6 +142,7 @@
           lng={dest.lng}
           name={dest.title}
           id={dest.id}
+          active={true}
         />
       {/each}
     </div>
@@ -167,6 +168,7 @@
           lng={dest.lng}
           name={dest.title}
           id={dest.id}
+          active={false}
         />
       {/each}
     </div>
