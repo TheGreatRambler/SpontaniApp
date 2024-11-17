@@ -171,39 +171,34 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			}, nil
 		}
 
-		taskId, exists := request.QueryStringParameters["task_id"]
+		taskIdStr, exists := request.QueryStringParameters["task_id"]
 		if !exists {
-			taskId = ""
+			taskIdStr = "0"
 		}
 		caption, exists := request.QueryStringParameters["caption"]
 		if !exists {
 			caption = ""
 		}
 
+		taskId, err := strconv.Atoi(taskIdStr)
+		if err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       "Invalid parameter: task_id",
+			}, nil
+		}
+
 		var img_id int
 
-		var err error
-
-		if taskId == "" {
-			err = dbConn.QueryRow(context.Background(), `
-				INSERT INTO img (uploaded, caption)
-				VALUES ($1, $2)
-				RETURNING id
-			`,
-				time.Now(),
-				caption,
-			).Scan(&img_id)
-		} else {
-			err = dbConn.QueryRow(context.Background(), `
-				INSERT INTO img (task_id, uploaded, caption)
-				VALUES ($1, $2, $3)
-				RETURNING id
-			`,
-				taskId,
-				time.Now(),
-				caption,
-			).Scan(&img_id)
-		}
+		err = dbConn.QueryRow(context.Background(), `
+			INSERT INTO img (task_id, uploaded, caption)
+			VALUES ($1, $2, $3)
+			RETURNING id
+		`,
+			taskId,
+			time.Now(),
+			caption,
+		).Scan(&img_id)
 
 		if err != nil {
 			return events.APIGatewayProxyResponse{

@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { Button, Fileupload, Input, Modal } from 'flowbite-svelte';
+  import { Button, Fileupload, Modal } from 'flowbite-svelte';
 
   let { openModal = $bindable(), name }: { openModal: boolean, name: string } = $props();
 
@@ -9,12 +9,11 @@
     const formData = new FormData(event.target);
 
     const bytes = await (formData.get("file")).arrayBuffer();
-    console.log(bytes);
 
-    //await fetch('https://uelhkpgmp9.execute-api.us-east-1.amazonaws.com/prod/post?request_type=upload_image&task_id=1234&caption=testing', {
-    //  method: 'POST',
-    //  body: bytes,
-    //});
+    await fetch(`${import.meta.env.VITE_BASE_URL}/post?request_type=upload_image&task_id=1234&caption=testing`, {
+      method: 'POST',
+      body: bytes,
+    });
   }
 
 </script>
@@ -26,8 +25,6 @@
     <!-- whee duplication go brr -->
     <!-- if this wasn't a hackathon project, I woulda made the component -->
     <Fileupload name="file" id="with_helper" class="mb-2" />
-    <!-- TODO: remove the input - the backend doesn't support captions -->
-    <!-- <Input name="fuckyfuckybitchbitch" type="text" placeholder="Enter a caption (optional)" /> -->
     <Button type="submit" class="w-full mt-2">Upload</Button>
   </form>
 
