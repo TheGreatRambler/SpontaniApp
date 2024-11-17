@@ -11,9 +11,9 @@
     } from "flowbite-svelte";
     import MapComponent from "$lib/map.svelte";
 
+    const DEFAULT_DURATION = 60; // number of seconds for which a destination is valid
+
     let loaded = $state(false);
-    let selectedStartDate: Date | null = $state(null);
-    let selectedEndDate: Date | null = $state(null);
 
     let form_data = {
         title: "",
@@ -78,45 +78,41 @@
     };
 
     let on_form_submit = async () => {
-        if (selectedStartDate && selectedEndDate) {
-            let interval_id = setInterval(async () => {
-                if (initial_image_loaded) {
-                    let res = await (
-                        await fetch(
-                            `${import.meta.env.VITE_BASE_URL}/post?request_type=create_task`,
-                            {
-                                method: "POST",
-                                body: JSON.stringify({
-                                    title: form_data.title,
-                                    description: form_data.description,
-                                    lat: lat,
-                                    lng: lng,
-                                    start: Math.floor(
-                                        selectedStartDate!.getTime() / 1000,
-                                    ),
-                                    stop: Math.floor(
-                                        selectedEndDate!.getTime() / 1000,
-                                    ),
-                                    initial_img_id: form_data.initial_img_id,
-                                }),
-                            },
-                        )
-                    ).json();
-
-                    // Update image's task ID
+        let interval_id = setInterval(async () => {
+            if (initial_image_loaded) {
+                let res = await (
                     await fetch(
-                        `${import.meta.env.VITE_BASE_URL}/post?request_type=update_image&id=${form_data.initial_img_id}&task_id=${res.id}`,
+                        `${import.meta.env.VITE_BASE_URL}/post?request_type=create_task`,
                         {
                             method: "POST",
+                            body: JSON.stringify({
+                                title: form_data.title,
+                                description: form_data.description,
+                                lat: lat,
+                                lng: lng,
+                                start: Math.floor(
+                                    Date.now() / 1000,
+                                ),
+                                stop: Math.floor(
+                                    Date.now() / 1000 + DEFAULT_DURATION,
+                                ),
+                                initial_img_id: form_data.initial_img_id,
+                            }),
                         },
-                    );
+                    )
+                ).json();
 
-                    window.location.href = "/completion";
+                // Update image's task ID
+                await fetch(
+                    `${import.meta.env.VITE_BASE_URL}/post?request_type=update_image&id=${form_data.initial_img_id}&task_id=${res.id}`,
+                    {
+                        method: "POST",
+                    },
+                );
 
-                    clearInterval(interval_id);
-                }
-            }, 500);
-        }
+                clearInterval(interval_id);
+            }
+        }, 500);
     };
 </script>
 
@@ -151,26 +147,6 @@
                 ></textarea>
             </Label>
 
-            <Label class="space-y-2">
-                <span>Start Date</span>
-                <div class="mb-4 md:w-1/2">
-                    <Datepicker
-                        bind:value={selectedStartDate}
-                        inputClass="bg-white dark:bg-primary-600 border black dark:border-primary-500"
-                    />
-                </div>
-            </Label>
-
-            <Label class="space-y-2">
-                <span>End Date</span>
-                <div class="mb-4 md:w-1/2">
-                    <Datepicker
-                        bind:value={selectedEndDate}
-                        inputClass="bg-white dark:bg-primary-600 border black dark:border-primary-500"
-                    />
-                </div>
-            </Label>
-
             <Label for="with_helper" class="space-y-2">Upload Image</Label>
             <Fileupload
                 bind:files
@@ -178,7 +154,6 @@
                 id="with_helper"
                 class="mb-2"
             />
-            <Helper>SVG, PNG, JPG or GIF (MAX. 800x400px).</Helper>
 
             <div class="flex space-x-4 justify-center">
                 <Button
