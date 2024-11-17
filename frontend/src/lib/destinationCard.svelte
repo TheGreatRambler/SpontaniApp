@@ -7,6 +7,6 @@
 </script>
 
 <Card {img} class="max-w-[600px]">
-  <h3 class="font-bold text-lg text-black">{name}</h3>
+  <h3 class="font-bold text-lg text-black">{name.toLowerCase()}</h3>
   <p class="text-sm text-gray-600">available until {new Date(endDate - tzOffset).toISOString().slice(0,10)}</p>
 </Card>
