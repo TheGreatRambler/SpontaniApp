@@ -138,7 +138,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 					Body:       fmt.Sprintf("Database error: %v", err),
 				}, nil
 			}
-			events = append(events, TaskRet{
+			tasks = append(tasks, TaskRet{
 				Id:           id,
 				Title:        title,
 				Description:  description,
