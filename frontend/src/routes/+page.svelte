@@ -1,5 +1,6 @@
 <script lang='ts'>
   import DestinationCard from '$lib/destinationCard.svelte';
+  import MapComponent from '$lib/map.svelte';
 
   let tmpImage = 'rocks.jpg';
 
@@ -75,7 +76,10 @@
   <p class="text-lg text-primary-900">unite through adventure</p>
 </div>
 
-<main class="mx-4">
+<main class="m-4">
+
+  <MapComponent />
+
   <div class="my-12">
     <header class="my-4">
       <h2 class="my-2 mt-2 text-3xl font-bold">current destinations</h2>
