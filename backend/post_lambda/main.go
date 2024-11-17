@@ -184,26 +184,15 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 		var err error
 
-		if taskId == "" {
-			err = dbConn.QueryRow(context.Background(), `
-				INSERT INTO img (uploaded, caption)
-				VALUES ($1, $2)
-				RETURNING id
-			`,
-				time.Now(),
-				caption,
-			).Scan(&img_id)
-		} else {
-			err = dbConn.QueryRow(context.Background(), `
-				INSERT INTO img (task_id, uploaded, caption)
-				VALUES ($1, $2, $3)
-				RETURNING id
-			`,
-				taskId,
-				time.Now(),
-				caption,
-			).Scan(&img_id)
-		}
+		err = dbConn.QueryRow(context.Background(), `
+			INSERT INTO img (task_id, uploaded, caption)
+			VALUES ($1, $2, $3)
+			RETURNING id
+		`,
+			taskId,
+			time.Now(),
+			caption,
+		).Scan(&img_id)
 
 		if err != nil {
 			return events.APIGatewayProxyResponse{
