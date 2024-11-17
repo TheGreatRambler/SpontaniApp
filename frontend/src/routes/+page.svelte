@@ -49,7 +49,26 @@
           let res = await fetch(
             `${import.meta.env.VITE_BASE_URL}/get?request_type=get_completed_tasks`,
           );
-          completedDestinationData = await res.json();
+          let tackCompData = await res.json();
+
+          let newCompleteDestinationData: any[] = [];
+          for (let task of tackCompData) {
+            let initial_image_url = (
+              await (
+                await fetch(
+                  `${import.meta.env.VITE_BASE_URL}/post?request_type=get_presigned_url&id=${task.initial_img_id}`,
+                  { method: "POST" },
+                )
+              ).json()
+            ).url;
+            newCompleteDestinationData.push({
+              ...task,
+              initial_image_url: initial_image_url,
+            });
+          }
+
+          completedDestinationData = newCompleteDestinationData;
+
         })();
       },
     );
@@ -120,7 +139,7 @@
       <DestinationCard
         description={dest.description}
         endDate={dest.stop * 1000}
-        img={tmpImage}
+        img={dest.initial_image_url}
         lat={dest.lat}
         lng={dest.lng}
         name={dest.title}
