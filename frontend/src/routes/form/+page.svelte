@@ -3,14 +3,14 @@
     import { Card, Button, Label, Input, Datepicker, Fileupload, Helper } from 'flowbite-svelte';
     import MapComponent from '$lib/map.svelte';
     let loaded = $state(false);
+    let selectedStartDate = $state(null);
+    let selectedEndDate = $state(null);
 
     let form_data = {
       title: "",
       description: "",
       lat: 0,
       lng: 0,
-      start: new Date(),
-      stop: new Date(),
       initial_image_id: 0,
     };
 
@@ -37,8 +37,8 @@
             description: form_data.description,
             lat: lat,
             lng: lng,
-            start: Math.floor(form_data.start.getTime() / 1000),
-            stop: Math.floor(form_data.stop.getTime() / 1000),
+            start: Math.floor(selectedStartDate.getTime() / 1000),
+            stop: Math.floor(selectedEndDate.getTime() / 1000),
             initial_image_id: 0,
           });
 
@@ -79,14 +79,14 @@
             <Label class="space-y-2">
                 <span>Start Date</span>
                 <div class="mb-4 md:w-1/2">
-                    <Datepicker bind:value={form_data.start} inputClass="bg-white dark:bg-primary-600 border border-primary-300 dark:border-primary-500" />
+                    <Datepicker bind:value={selectedStartDate} inputClass="bg-white dark:bg-primary-600 border black dark:border-primary-500" />
                 </div>
             </Label>
 
             <Label class="space-y-2">
                 <span>End Date</span>
                 <div class="mb-4 md:w-1/2">
-                    <Datepicker bind:value={form_data.stop} inputClass="bg-white dark:bg-primary-600 border border-primary-300 dark:border-primary-500" />
+                    <Datepicker bind:value={selectedEndDate} inputClass="bg-white dark:bg-primary-600 border black dark:border-primary-500" />
                 </div>
             </Label>
             
