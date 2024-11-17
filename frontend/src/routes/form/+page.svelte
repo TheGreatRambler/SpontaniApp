@@ -11,7 +11,7 @@
     } from "flowbite-svelte";
     import MapComponent from "$lib/map.svelte";
 
-    const DEFAULT_DURATION = 60; // number of seconds for which a destination is valid
+    const DEFAULT_DURATION = 4 * 60 * 60; // number of seconds for which a destination is valid
 
     let loaded = $state(false);
 
