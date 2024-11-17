@@ -27,7 +27,7 @@
       <h2 class="my-2 mt-2 text-3xl font-bold">past destinations</h2>
       <p>the deadline for going to these is over; now you can see everyone's pictures!</p>
     </header>
-    <div class="grid grid-flow-row grid-cols-1 sm:grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] gap-4 place-content-center">
+    <div class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center">
       {#each Array(3) as _}
         <DestinationCard img={tmpImage} endDate={new Date(Date.now())} name="Rocks" />
       {/each}
