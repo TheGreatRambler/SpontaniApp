@@ -5,7 +5,7 @@
 
   let props: {
     children?: Snippet;
-    markers: { lat: number; lng: number; title: string; color: string }[];
+    markers: { lat: number; lng: number; title: string; color: string; id: number }[];
     start_lat: number;
     start_lng: number;
     map_center?: (map: google.maps.Map) => void;
@@ -70,6 +70,33 @@
           strokeWeight: 2,
         },
       });
+
+      google.maps.event.addListener(mrkr, "mouseover", () => {
+        mrkr.setIcon({
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 12, // Increase size on hover
+          fillColor: d.color,
+          fillOpacity: 1,
+          strokeColor: "#000000", // Change stroke color on hover
+          strokeWeight: 3,
+        });
+      });
+
+      google.maps.event.addListener(mrkr, "mouseout", () => {
+        mrkr.setIcon({
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 10, // Revert to original size
+          fillColor: d.color,
+          fillOpacity: 1,
+          strokeColor: "#FFFFFF", // Revert stroke color
+          strokeWeight: 2,
+        });
+      });
+
+      google.maps.event.addListener(mrkr, "click", () => {
+        window.location.href = `/submit/${d.id}`;
+      });
+
       active_markers.push(mrkr);
     });
   });

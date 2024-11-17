@@ -101,6 +101,7 @@
             lng: task.lng,
             title: task.title,
             color: "#4ECDC4",
+            id: task.id,
           };
         })
         .concat(
@@ -110,6 +111,7 @@
               lng: task.lng,
               title: task.title,
               color: "#FF6B6B",
+              id: task.id,
             };
           }),
         )}
