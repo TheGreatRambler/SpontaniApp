@@ -155,8 +155,7 @@ func parseTask(row RowScanner) (TaskRet, *events.APIGatewayProxyResponse) {
 	var stop time.Time
 	var initial_img_id int
 	var likes int
-	var distance float64
-	err := row.Scan(&id, &title, &location_name, &location_address, &description, &lat, &lng, &uploaded, &start, &stop, &initial_img_id, &likes, &distance)
+	err := row.Scan(&id, &title, &location_name, &location_address, &description, &lat, &lng, &uploaded, &start, &stop, &initial_img_id, &likes)
 	if err != nil {
 		return TaskRet{}, &events.APIGatewayProxyResponse{
 			StatusCode: 500,
@@ -313,7 +312,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			SELECT id, title, location_name, location_address,
 				description, lat, lng, uploaded,
 				start, stop, initial_img_id, likes
-				FROM task WHERE start > $1 AND stop < $1 ORDER BY start ASC
+				FROM task WHERE start < $1 AND stop > $1 ORDER BY start ASC
 		`, time.Now())
 		if err != nil {
 			return events.APIGatewayProxyResponse{
@@ -343,7 +342,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			SELECT id, title, location_name, location_address,
 				description, lat, lng, uploaded,
 				start, stop, initial_img_id, likes
-				FROM task WHERE start > $1 AND stop < $1 ORDER BY likes DESC
+				FROM task WHERE start < $1 AND stop > $1 ORDER BY likes DESC
 		`, time.Now())
 		if err != nil {
 			return events.APIGatewayProxyResponse{
@@ -373,7 +372,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			SELECT id, title, location_name, location_address,
 				description, lat, lng, uploaded,
 				start, stop, initial_img_id, likes
-				FROM task WHERE start > $1 AND stop < $1 ORDER BY num_submissions DESC
+				FROM task WHERE start < $1 AND stop > $1 ORDER BY num_submissions DESC
 		`, time.Now())
 		if err != nil {
 			return events.APIGatewayProxyResponse{
@@ -403,7 +402,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			SELECT id, title, location_name, location_address,
 				description, lat, lng, uploaded,
 				start, stop, initial_img_id, likes
-				FROM task WHERE start > $1 AND stop < $1 ORDER BY uploaded ASC
+				FROM task WHERE start < $1 AND stop > $1 ORDER BY uploaded ASC
 		`, time.Now())
 		if err != nil {
 			return events.APIGatewayProxyResponse{
