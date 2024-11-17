@@ -4,5 +4,6 @@ export default interface Destination {
   img: any,
   lat: number,
   lng: number,
-  name: string
+  name: string,
+  id: number,
 };
