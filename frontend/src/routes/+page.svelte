@@ -78,15 +78,13 @@
   };
 </script>
 
-<button
-  class="absolute flex justify-center items-center size-16 top-4 right-4 sm:top-6 sm:right-6 bg-primary-500 text-white font-bold rounded-full hover:bg-primary-600 focus:outline-none"
-  aria-label="Add"
-  onclick={() => (window.location.href = "/form")}
->
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-8">
-    <path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
-  </svg>
-</button>
+  <button
+    class="absolute top-4 right-4 sm:top-6 sm:right-6 bg-primary-900 text-white font-bold rounded-full size-16 text-4xl flex items-center justify-center hover:bg-primary-600 focus:outline-none"
+    aria-label="Add"
+    onclick={() => (window.location.href = "/form")}
+  >
+    +
+  </button>
 
 <div class="flex flex-col items-center w-full py-24 bg-primary-200">
   <h1 class="block m-2 text-6xl text-black font-bold">spontani</h1>
