@@ -213,7 +213,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				point($1, $2) <@>  (point(lat, lng)::point) as distance
 				FROM task WHERE start > $3 AND stop < $3
 				ORDER BY distance ASC
-		`, lat, lng, time.Now().Unix())
+		`, lat, lng, time.Now())
 		if err != nil {
 			return events.APIGatewayProxyResponse{
 				StatusCode: 500,
@@ -285,7 +285,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				description, lat, lng, uploaded,
 				start, stop, initial_img_id, likes
 				FROM task WHERE start > $1 AND stop < $1 ORDER BY start ASC
-		`, time.Now().Unix())
+		`, time.Now())
 		if err != nil {
 			return events.APIGatewayProxyResponse{
 				StatusCode: 500,
@@ -315,7 +315,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				description, lat, lng, uploaded,
 				start, stop, initial_img_id, likes
 				FROM task WHERE start > $1 AND stop < $1 ORDER BY likes DESC
-		`, time.Now().Unix())
+		`, time.Now())
 		if err != nil {
 			return events.APIGatewayProxyResponse{
 				StatusCode: 500,
@@ -345,7 +345,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				description, lat, lng, uploaded,
 				start, stop, initial_img_id, likes
 				FROM task WHERE start > $1 AND stop < $1 ORDER BY num_submissions DESC
-		`, time.Now().Unix())
+		`, time.Now())
 		if err != nil {
 			return events.APIGatewayProxyResponse{
 				StatusCode: 500,
@@ -375,7 +375,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				description, lat, lng, uploaded,
 				start, stop, initial_img_id, likes
 				FROM task WHERE start > $1 AND stop < $1 ORDER BY uploaded ASC
-		`, time.Now().Unix())
+		`, time.Now())
 		if err != nil {
 			return events.APIGatewayProxyResponse{
 				StatusCode: 500,

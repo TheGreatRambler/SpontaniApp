@@ -143,7 +143,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 		err = dbConn.QueryRow(context.Background(), `
 			INSERT INTO task (title, location_name, location_address,
-			description, lat, lng,uploaded, start, stop,
+			description, lat, lng, uploaded, start, stop,
 			initial_img_id, likes)
 			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 0)
 			RETURNING id
@@ -197,7 +197,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				VALUES ($1, $2)
 				RETURNING id
 			`,
-				time.Now().Unix(),
+				time.Now(),
 				caption,
 			).Scan(&img_id)
 		} else {
@@ -207,7 +207,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				RETURNING id
 			`,
 				taskId,
-				time.Now().Unix(),
+				time.Now(),
 				caption,
 			).Scan(&img_id)
 		}
