@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import { Card, Button, Label, Input, Datepicker, Fileupload, Helper } from 'flowbite-svelte';
     import MapComponent from '$lib/map.svelte';
+
     let loaded = $state(false);
     let selectedStartDate = $state(null);
     let selectedEndDate = $state(null);
@@ -25,10 +26,18 @@
       });
     });
 
-    let map_center = (map: google.maps.Map) => {
+    let live_place_name_element: HTMLSpanElement;
+    let last_update = 0;
+    let map_center = async (map: google.maps.Map) => {
         let center = map.getCenter();
         lat = center!.lat();
         lng = center!.lng();
+        
+        let timestamp = Date.now();
+        if (timestamp - last_update > 1000 * 1) {
+            last_update = timestamp;
+            live_place_name_element.innerHTML = await (await fetch(`${import.meta.env.VITE_BASE_URL}/get?request_type=location_to_place_name&lat=${lat}&lng=${lng}`)).text();
+        }
     };
 
     let on_form_submit = () => {
@@ -43,7 +52,7 @@
           });
 
           /*
-        const response = await fetch("https://uelhkpgmp9.execute-api.us-east-1.amazonaws.com/prod/post?request_type=create_task", {
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/post?request_type=create_task`, {
           method: "POST",
           body: JSON.stringify({
             title: form_data.title,
@@ -104,9 +113,13 @@
                 <Label class="space-y-2">
                     <h3 class="text-xl font-medium text-gray-900 dark:text-white">Location</h3>
                 </Label>
-                <MapComponent markers={[]} start_lat={lat} start_lng={lng} map_center={map_center}>
-                    <div class="absolute top-1/2 left-1/2 w-4 h-4 bg-red-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-                </MapComponent>
+
+                {#if loaded}
+                    <MapComponent markers={[]} start_lat={lat} start_lng={lng} map_center={map_center}>
+                        <div class="absolute top-1/2 left-1/2 w-4 h-4 bg-red-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+                        <span bind:this={live_place_name_element} class="text-center text-xl font-medium text-gray-900 dark:text-white">Here</span>
+                    </MapComponent>
+                {/if}
         </form>
     </div>
 </div>

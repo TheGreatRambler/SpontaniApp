@@ -3,16 +3,31 @@
 
   let { openModal = $bindable(), name }: { openModal: boolean, name: string } = $props();
 
+  async function onSubmit(event: Event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+
+    const bytes = await (formData.get("file")).arrayBuffer();
+    console.log(bytes);
+
+    //await fetch('https://uelhkpgmp9.execute-api.us-east-1.amazonaws.com/prod/post?request_type=upload_image&task_id=1234&caption=testing', {
+    //  method: 'POST',
+    //  body: bytes,
+    //});
+  }
+
 </script>
 
 <Modal bind:open={openModal} size="sm" outsideclose>
   <h3 class="mb-4 text-xl font-bold text-black dark:text-white">take a selfie at {name.toLowerCase()}</h3>
 
-  <form class="w-full">
+  <form onsubmit={onSubmit} class="w-full">
     <!-- whee duplication go brr -->
     <!-- if this wasn't a hackathon project, I woulda made the component -->
-    <Fileupload id="with_helper" class="mb-2" />
-    <Input type="text" placeholder="Enter a caption (optional)" />
+    <Fileupload name="file" id="with_helper" class="mb-2" />
+    <!-- TODO: remove the input - the backend doesn't support captions -->
+    <!-- <Input name="fuckyfuckybitchbitch" type="text" placeholder="Enter a caption (optional)" /> -->
     <Button type="submit" class="w-full mt-2">Upload</Button>
   </form>
 
