@@ -39,6 +39,14 @@ type TaskRet struct {
 	Likes           int     `json:"likes"`
 }
 
+type ImgRet struct {
+	Id       int    `json:"id"`
+	TaskID   int    `json:"task_id"`
+	Uploaded int64  `json:"uploaded"`
+	Caption  string `json:"caption"`
+	URL      string `json:"url"`
+}
+
 func init() {
 	// Load environment variables
 	err := godotenv.Load()
@@ -387,6 +395,96 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return events.APIGatewayProxyResponse{
 			StatusCode: 200,
 			Body:       tasks_json,
+			Headers: map[string]string{
+				"Content-Type": "application/json",
+			},
+		}, nil
+	case "get_images":
+		task_id_str, task_id_exists := request.QueryStringParameters["task_id"]
+		if !task_id_exists {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       "Missing required parameters: task_id",
+				Headers: map[string]string{
+					"Content-Type": "text/plain",
+				},
+			}, nil
+		}
+
+		task_id, err := strconv.Atoi(task_id_str)
+		if err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       "Invalid parameters: task_id",
+				Headers: map[string]string{
+					"Content-Type": "text/plain",
+				},
+			}, nil
+		}
+
+		rows, err := dbConn.Query(context.Background(), `
+			SELECT id, uploaded, caption
+				FROM img WHERE task_id = $1
+		`, task_id)
+		if err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 500,
+				Body:       fmt.Sprintf("Database error: %v", err),
+				Headers: map[string]string{
+					"Content-Type": "text/plain",
+				},
+			}, nil
+		}
+		defer rows.Close()
+
+		imgs := []ImgRet{}
+		for rows.Next() {
+			var id int
+			var uploaded int64
+			var caption string
+			err := rows.Scan(&id, &uploaded, &caption)
+			if err != nil {
+				return events.APIGatewayProxyResponse{
+					StatusCode: 500,
+					Body:       fmt.Sprintf("Database error: %v", err),
+					Headers: map[string]string{
+						"Content-Type": "text/plain",
+					},
+				}, nil
+			}
+
+			presigned_req, _ := s3Client.GetObjectRequest(&s3.GetObjectInput{
+				Bucket: aws.String("spontaniapp-imgs"),
+				Key:    aws.String(fmt.Sprintf("%d-%d", task_id, id)),
+			})
+			presigned_url, err := presigned_req.Presign(7 * 24 * time.Hour)
+			if err != nil {
+				panic(fmt.Errorf("error in raw video presigned URL: %v", err))
+			}
+
+			imgs = append(imgs, ImgRet{
+				Id:       id,
+				TaskID:   task_id,
+				Uploaded: uploaded,
+				Caption:  caption,
+				URL:      presigned_url,
+			})
+		}
+
+		imgs_json, err := json.Marshal(imgs)
+		if err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 500,
+				Body:       fmt.Sprintf("JSON marshalling error: %v", err),
+				Headers: map[string]string{
+					"Content-Type": "text/plain",
+				},
+			}, nil
+		}
+
+		return events.APIGatewayProxyResponse{
+			StatusCode: 200,
+			Body:       string(imgs_json),
 			Headers: map[string]string{
 				"Content-Type": "application/json",
 			},
