@@ -6,6 +6,7 @@
   let tmpImage = "rocks.jpg";
 
   let destinationData = $state([]);
+  let completedDestinationData = $state([]);
 
   let loaded = $state(false);
 
@@ -24,6 +25,13 @@
             `${import.meta.env.VITE_BASE_URL}/get?request_type=get_nearby_recent_tasks&lat=${start_lat}&lng=${start_lng}`,
           );
           destinationData = await res.json();
+        })();
+
+        (async function () {
+          let res = await fetch(
+            `${import.meta.env.VITE_BASE_URL}/get?request_type=get_completed_tasks`,
+          );
+          completedDestinationData = await res.json();
         })();
       },
     );
@@ -90,17 +98,17 @@
     <div
       class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center"
     >
-      {#each Array(3) as _}
-        <DestinationCard
-          description="foo bar eggs spam"
-          endDate={0}
-          img={tmpImage}
-          lat={0.0}
-          lng={0.0}
-          name="placeholder"
-          id={1}
-        />
-      {/each}
-    </div>
+      {#each completedDestinationData as dest}
+      <DestinationCard
+        description={dest.description}
+        endDate={dest.stop * 1000}
+        img={tmpImage}
+        lat={dest.lat}
+        lng={dest.lng}
+        name={dest.title}
+        id={dest.id}
+      />
+    {/each}
+</div>
   </div>
 </main>
