@@ -15,13 +15,18 @@
       <p>{data.destination.description}</p>
     </header>
 
-    <div class="flex justify-center items-center">
+    <div class="mx-auto">
       <div class="carousel-container max-w-3xl space-y-4">
-        <Carousel images={data.images} let:Indicators let:Controls bind:index>
+        <Carousel images={data.images} let:Indicators let:Controls bind:index class="w-[75vw]">
           <Controls />
           <Indicators />
         </Carousel>
-        <Thumbnails images={data.images} bind:index />
+        {#if data.images.length > 1}
+          <Thumbnails images={data.images} bind:index class="max-h-16" />
+        {/if}
+        <div class=" dark:text-white p-2 my-2 text-center">
+            {data.images[index].alt}
+        </div>
       </div>
     </div>
 
