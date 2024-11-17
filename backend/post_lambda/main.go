@@ -18,6 +18,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"googlemaps.github.io/maps"
+	"honnef.co/go/spew"
 )
 
 var mapsClient *maps.Client
@@ -211,6 +212,8 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 				Body:       fmt.Sprintf("Failed to insert image: %v", err),
 			}, nil
 		}
+
+		spew.Dump(request)
 
 		// Decode image back to bytes
 		decoded_image, err := base64.StdEncoding.DecodeString(request.Body)
