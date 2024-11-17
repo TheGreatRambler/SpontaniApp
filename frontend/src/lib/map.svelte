@@ -38,7 +38,6 @@
         map = new google.maps.Map(mapElement, mapOptions);
 
         markers.forEach((d) => {
-          console.log(d);
           let mrkr = new google.maps.marker.AdvancedMarkerElement({
             map: map,
             position: {lat: d.lat, lng: d.lng},
