@@ -5,85 +5,7 @@
 
   let tmpImage = "rocks.jpg";
 
-  let destinationData = $state([
-    {
-      title: "Rocks",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      lat: 0.0,
-      lng: 0.0,
-      start: 1731825677,
-      stop: 1731925677,
-      initial_img_id: "",
-      id: 1,
-    },
-    {
-      title: "Rocks",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      lat: 0.0,
-      lng: 0.0,
-      start: 1731825677,
-      stop: 1731925677,
-      initial_img_id: "",
-      id: 1,
-    },
-    {
-      title: "Rocks",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      lat: 0.0,
-      lng: 0.0,
-      start: 1731825677,
-      stop: 1731925677,
-      initial_img_id: "",
-      id: 1,
-    },
-    {
-      title: "Rocks",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      lat: 0.0,
-      lng: 0.0,
-      start: 1731825677,
-      stop: 1731925677,
-      initial_img_id: "",
-      id: 1,
-    },
-    {
-      title: "Rocks",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      lat: 0.0,
-      lng: 0.0,
-      start: 1731825677,
-      stop: 1731925677,
-      initial_img_id: "",
-      id: 1,
-    },
-    {
-      title: "Rocks",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      lat: 0.0,
-      lng: 0.0,
-      start: 1731825677,
-      stop: 1731925677,
-      initial_img_id: "",
-      id: 1,
-    },
-    {
-      title: "Rocks",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
-      lat: 0.0,
-      lng: 0.0,
-      start: 1731825677,
-      stop: 1731925677,
-      initial_img_id: "",
-      id: 1,
-    },
-  ]);
+  let destinationData = $state([]);
 
   let loaded = $state(false);
 
@@ -137,6 +59,9 @@
       <h2 class="my-2 mt-2 text-3xl font-bold">current destinations</h2>
       <p>where will you go today?</p>
     </header>
+    {#if destinationData.length < 1}
+      <p>no existing destinations - add one with the plus button!</p>
+    {/if}
     <div
       class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center"
     >
