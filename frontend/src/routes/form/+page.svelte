@@ -54,8 +54,10 @@
         }
     };
 
+    let initial_image_loaded = false;
     let files: FileList | undefined = $state();
     let on_file_upload_change = async () => {
+        initial_image_loaded = false;
         let file = files![0];
 
         let res = await (
@@ -72,39 +74,48 @@
         ).json();
 
         form_data.initial_img_id = res.id;
+        initial_image_loaded = true;
     };
 
     let on_form_submit = async () => {
         if (selectedStartDate && selectedEndDate) {
-            let res = await (
-                await fetch(
-                    `${import.meta.env.VITE_BASE_URL}/post?request_type=create_task`,
-                    {
-                        method: "POST",
-                        body: JSON.stringify({
-                            title: form_data.title,
-                            description: form_data.description,
-                            lat: lat,
-                            lng: lng,
-                            start: Math.floor(
-                                selectedStartDate!.getTime() / 1000,
-                            ),
-                            stop: Math.floor(selectedEndDate!.getTime() / 1000),
-                            initial_img_id: form_data.initial_img_id,
-                        }),
-                    },
-                )
-            ).json();
+            let interval_id = setInterval(async () => {
+                if (initial_image_loaded) {
+                    let res = await (
+                        await fetch(
+                            `${import.meta.env.VITE_BASE_URL}/post?request_type=create_task`,
+                            {
+                                method: "POST",
+                                body: JSON.stringify({
+                                    title: form_data.title,
+                                    description: form_data.description,
+                                    lat: lat,
+                                    lng: lng,
+                                    start: Math.floor(
+                                        selectedStartDate!.getTime() / 1000,
+                                    ),
+                                    stop: Math.floor(
+                                        selectedEndDate!.getTime() / 1000,
+                                    ),
+                                    initial_img_id: form_data.initial_img_id,
+                                }),
+                            },
+                        )
+                    ).json();
 
-            // Update image's task ID
-            await fetch(
-                `${import.meta.env.VITE_BASE_URL}/post?request_type=update_image&id=${form_data.initial_img_id}&task_id=${res.id}`,
-                {
-                    method: "POST",
-                },
-            );
+                    // Update image's task ID
+                    await fetch(
+                        `${import.meta.env.VITE_BASE_URL}/post?request_type=update_image&id=${form_data.initial_img_id}&task_id=${res.id}`,
+                        {
+                            method: "POST",
+                        },
+                    );
 
-            //window.location.href = "/completion";
+                    window.location.href = "/completion";
+
+                    clearInterval(interval_id);
+                }
+            }, 500);
         }
     };
 </script>

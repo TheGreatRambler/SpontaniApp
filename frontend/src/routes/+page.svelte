@@ -5,8 +5,8 @@
 
   let tmpImage = "rocks.jpg";
 
-  let destinationData = $state([]);
-  let completedDestinationData = $state([]);
+  let destinationData = $state([] as any[]);
+  let completedDestinationData = $state([] as any[]);
 
   let loaded = $state(false);
 
@@ -24,7 +24,25 @@
           let res = await fetch(
             `${import.meta.env.VITE_BASE_URL}/get?request_type=get_nearby_recent_tasks&lat=${start_lat}&lng=${start_lng}`,
           );
-          destinationData = await res.json();
+          let taskData = await res.json();
+
+          let newDestinationData: any[] = [];
+          for (let task of taskData) {
+            let initial_image_url = (
+              await (
+                await fetch(
+                  `${import.meta.env.VITE_BASE_URL}/post?request_type=get_presigned_url&id=${task.initial_img_id}`,
+                  { method: "POST" },
+                )
+              ).json()
+            ).url;
+            newDestinationData.push({
+              ...task,
+              initial_image_url: initial_image_url,
+            });
+          }
+
+          destinationData = newDestinationData;
         })();
 
         (async function () {
@@ -77,7 +95,7 @@
         <DestinationCard
           description={dest.description}
           endDate={dest.stop * 1000}
-          img={tmpImage}
+          img={dest.initial_image_url}
           lat={dest.lat}
           lng={dest.lng}
           name={dest.title}
