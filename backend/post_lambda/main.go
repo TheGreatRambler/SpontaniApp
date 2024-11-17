@@ -279,6 +279,83 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			StatusCode: 200,
 		}, nil
 
+	case "like":
+
+		task_id_str, exists := request.QueryStringParameters["task_id"]
+
+		if !exists {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       "Missing required parameter: task_id",
+			}, nil
+		}
+
+		task_id, task_id_err := strconv.Atoi(task_id_str)
+		if task_id_err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       "Invalid required parameter: task_id",
+			}, nil
+		}
+
+		var likes int
+
+		err := dbConn.QueryRow(context.Background(), `
+				UPDATE task
+				SET likes = likes + 1
+				WHERE id = $1
+				RETURNING likes
+			`,
+			task_id,
+		).Scan(&likes)
+
+		if err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 500,
+				Body:       fmt.Sprintf("Database error: %v", err),
+			}, nil
+		}
+
+		return events.APIGatewayProxyResponse{
+			StatusCode: 200,
+			Body:       fmt.Sprintf("{\"likes\":%d}", likes),
+		}, nil
+
+	case "get_presigned_url":
+		img_id_str, exists := request.QueryStringParameters["id"]
+		if !exists {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       "Missing required parameter: id",
+			}, nil
+		}
+
+		img_id, img_id_err := strconv.Atoi(img_id_str)
+		if img_id_err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       "Invalid required parameter: id",
+			}, nil
+		}
+
+		req, _ := s3Client.GetObjectRequest(&s3.GetObjectInput{
+			Bucket: aws.String("spontaniapp-imgs"),
+			Key:    aws.String(fmt.Sprintf("%d", img_id)),
+		})
+
+		url, err := req.Presign(15 * time.Minute)
+		if err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 500,
+				Body:       fmt.Sprintf("Failed to generate presigned URL: %v", err),
+			}, nil
+		}
+
+		return events.APIGatewayProxyResponse{
+			StatusCode: 200,
+			Body:       fmt.Sprintf("{\"url\":\"%s\"}", url),
+		}, nil
+
 	default:
 		return events.APIGatewayProxyResponse{
 			StatusCode: 400,
