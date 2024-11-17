@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
@@ -143,6 +144,8 @@ type RowScanner interface {
 }
 
 func parseTask(row RowScanner) (TaskRet, *events.APIGatewayProxyResponse) {
+	spew.Dump(row)
+
 	var id int
 	var title string
 	var location_name string
@@ -239,7 +242,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			SELECT id, title, location_name, location_address,
 				description, lat, lng, uploaded,
 				start, stop, initial_img_id, likes,
-				point($1, $2) <@>  (point(lat, lng)::point) as distance
+				point($1, $2) <@> (point(lat, lng)::point) as distance
 				FROM task WHERE start > $3 AND stop < $3
 				ORDER BY distance ASC
 		`, lat, lng, time.Now())
