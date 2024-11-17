@@ -8,7 +8,7 @@
 
 </script>
 
-<main class="flex justify-center p-12 mb-2">
+<main class="w-dvw h-dvh flex justify-center place-items-center">
   <div class="w-1/2 h-1/2">
     <header class="my-2 text-center">
       <h2 class="my-2 mt-2 text-3xl font-bold">{data.destination.title}</h2>
