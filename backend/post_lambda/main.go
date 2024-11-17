@@ -286,6 +286,26 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 }
 
+func corsHandlerWrapper(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	response, err := handler(request)
+	if err != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       fmt.Sprintf("Internal server error: %v", err),
+			Headers: map[string]string{
+				"Content-Type": "text/plain",
+			},
+		}, nil
+	}
+
+	response.Headers["Access-Control-Allow-Origin"] = "*"
+	response.Headers["Access-Control-Allow-Headers"] = "*"
+	response.Headers["Access-Control-Allow-Methods"] = "*"
+	response.Headers["Access-Control-Allow-Credentials"] = "true"
+
+	return response, nil
+}
+
 func main() {
-	lambda.Start(handler)
+	lambda.Start(corsHandlerWrapper)
 }
