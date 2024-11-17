@@ -85,7 +85,7 @@
 
     (async function () {
       let res = await fetch(
-        "https://f007qjswdf.execute-api.us-east-1.amazonaws.com/prod/get?request_type=get_nearby_recent_tasks&lat=1234&lng=1234",
+        `https://f007qjswdf.execute-api.us-east-1.amazonaws.com/prod/get?request_type=get_nearby_recent_tasks&lat=${start_lat}&lng=${start_lng}`,
       );
       destinationData = await res.json();
     })();
