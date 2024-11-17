@@ -9,6 +9,8 @@
   async function onSubmit(event: Event) {
     event.preventDefault();
 
+    openModal = false;
+
     let file = files[0];
 
     await fetch(
