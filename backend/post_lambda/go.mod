@@ -20,4 +20,5 @@ require (
 	golang.org/x/text v0.18.0 // indirect
 	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1 // indirect
 	googlemaps.github.io/maps v1.7.0 // indirect
+	honnef.co/go/spew v0.0.0-20160306144918-6a474d848f64 // indirect
 )
