@@ -10,6 +10,8 @@
 
   const tzOffset = new Date().getTimezoneOffset() * 60000;
 
+  const expired = Date.now() - endDate > 0;
+
   const handleClick = (endDate) => {
     if (endDate > Date.now()) {
       openModal = true;
@@ -29,7 +31,7 @@
 >
   <h3 class="font-bold text-lg text-black">{name.toLowerCase()}</h3>
   <p class="text-sm text-gray-600">
-    available until {new Date(endDate - tzOffset).toISOString().slice(0, 10)}
+    {expired ? 'closed on' : 'available until'} {new Date(endDate - tzOffset).toISOString().slice(0, 10)}
   </p>
   <p class="text-gray-900">{description}</p>
 </Card>
