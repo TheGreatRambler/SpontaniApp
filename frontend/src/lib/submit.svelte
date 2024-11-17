@@ -1,10 +1,15 @@
 <script lang="ts">
-  import { Button, Fileupload, Modal } from "flowbite-svelte";
+  import { Button, Fileupload, Modal, Label } from "flowbite-svelte";
 
   let files: FileList | undefined = $state();
 
-  let { openModal = $bindable(), taskId, name }: { openModal: boolean; taskId: number, name: string } =
-    $props();
+  let caption = "";
+
+  let {
+    openModal = $bindable(),
+    taskId,
+    name,
+  }: { openModal: boolean; taskId: number; name: string } = $props();
 
   async function onSubmit(event: Event) {
     event.preventDefault();
@@ -14,7 +19,7 @@
     let file = files[0];
 
     await fetch(
-      `${import.meta.env.VITE_BASE_URL}/post?request_type=upload_image&task_id=${taskId}&caption=testing`,
+      `${import.meta.env.VITE_BASE_URL}/post?request_type=upload_image&task_id=${taskId}&caption=${caption}`,
       {
         method: "POST",
         body: file,
@@ -30,6 +35,18 @@
   <h3 class="mb-4 text-xl font-bold text-black dark:text-white">
     take a selfie at {name.toLowerCase()}
   </h3>
+
+  <Label class="space-y-2">
+    <span>Caption</span>
+    <textarea
+      bind:value={caption}
+      id="caption"
+      name="caption"
+      placeholder="That BBQ was insane!"
+      required
+      class="block w-full p-2 text-gray-900 border dark:border-primary-500 rounded-lg bg-white dark:bg-primary-600 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-300"
+    ></textarea>
+  </Label>
 
   <form onsubmit={onSubmit} class="w-full">
     <!-- whee duplication go brr -->
