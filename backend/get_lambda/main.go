@@ -80,6 +80,11 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	}
 
 	switch request_type {
+	case "get_google_maps_key":
+		return events.APIGatewayProxyResponse{
+			StatusCode: 200,
+			Body:       os.Getenv("DATABASE_URL"),
+		}, nil
 	case "get_nearby_recent_tasks":
 		lat_str, lat_exists := request.QueryStringParameters["lat"]
 		lng_str, lng_exists := request.QueryStringParameters["lng"]
