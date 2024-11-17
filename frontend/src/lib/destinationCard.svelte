@@ -13,4 +13,4 @@
   <h3 class="font-bold text-lg text-black">{name.toLowerCase()}</h3>
   <p class="text-sm text-gray-600">available until {new Date(endDate - tzOffset).toISOString().slice(0,10)}</p>
 </Card>
-<SubmitModal {img} bind:openModal={openModal} {name} />
+<SubmitModal bind:openModal={openModal} {name} />
