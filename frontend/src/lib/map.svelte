@@ -2,6 +2,8 @@
   import { onMount } from 'svelte';
   import { Loader } from '@googlemaps/js-api-loader';
 
+  let { markers }: { markers: {lat: number, lng: number, title: string}[] } = $props();
+
   let mapElement: HTMLElement;
 
   let map: google.maps.Map | undefined;
@@ -9,9 +11,9 @@
   onMount(async () => {
 
     const loader = new Loader({
-      apiKey: await (await (await fetch('https://55ztt2t02i.execute-api.us-east-1.amazonaws.com/prod/get?request_type=get_google_maps_key')).blob()).text(),
+      apiKey: await (await (await fetch('https://f007qjswdf.execute-api.us-east-1.amazonaws.com/prod/get?request_type=get_google_maps_key')).blob()).text(),
       version: 'weekly',
-      // ...additionalOptions,
+      libraries: ['marker']
     });
 
     let latitude: number = 0.0;
@@ -29,12 +31,20 @@
       zoom: 16
     };
 
-    // Callback
     loader.loadCallback(e => {
-
       if (e) {
+        console.error(e);
       } else {
         map = new google.maps.Map(mapElement, mapOptions);
+
+        markers.forEach((d) => {
+          console.log(d);
+          let mrkr = new google.maps.marker.AdvancedMarkerElement({
+            map: map,
+            position: {lat: d.lat, lng: d.lng},
+            title: d.title
+          });
+        });
       }
     });
 
