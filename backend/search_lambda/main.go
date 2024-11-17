@@ -205,6 +205,7 @@ func corsHandlerWrapper(request events.APIGatewayProxyRequest) (events.APIGatewa
 		}, nil
 	}
 
+	response.Headers = map[string]string{}
 	response.Headers["Access-Control-Allow-Origin"] = "*"
 	response.Headers["Access-Control-Allow-Headers"] = "*"
 	response.Headers["Access-Control-Allow-Methods"] = "*"
