@@ -16,15 +16,12 @@
     </header>
 
     <div class="flex justify-center">
-      <div class="carousel-container max-w-3xl space-y-4">
-        <Carousel images={data.images} let:Indicators let:Controls bind:index class="w-[75vw]">
+      <div class="carousel-container w-full max-w-full space-y-4">
+        <Carousel images={data.images} let:Indicators let:Controls bind:index class="w-full [height:_500px_!important]">
           <Controls />
           <Indicators />
         </Carousel>
-        {#if data.images.length > 1}
-          <Thumbnails images={data.images} bind:index class="max-h-16" />
-        {/if}
-        <div class=" dark:text-white p-2 my-2 text-center">
+        <div class=" dark:text-white p-2 text-center">
             {data.images[index].alt}
         </div>
       </div>
