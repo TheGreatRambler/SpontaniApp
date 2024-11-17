@@ -86,7 +86,7 @@
     +
   </button>
 
-<div class="flex flex-col items-center w-full py-24 bg-primary-300">
+<div class="flex flex-col items-center w-full py-24 bg-primary-200">
   <h1 class="block m-2 text-6xl text-black font-bold">spontani</h1>
   <p class="text-lg text-primary-900">unite through adventure</p>
 
