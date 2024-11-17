@@ -173,7 +173,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 
 		taskId, exists := request.QueryStringParameters["task_id"]
 		if !exists {
-			taskId = ""
+			taskId = "0"
 		}
 		caption, exists := request.QueryStringParameters["caption"]
 		if !exists {
