@@ -54,6 +54,7 @@
 
     let initial_image_loaded = false;
     let files: FileList | undefined = $state();
+    let done = false;
     let on_file_upload_change = async () => {
         initial_image_loaded = false;
         let file = files![0];
@@ -78,7 +79,8 @@
     let on_form_submit = async () => {
         if (selectedStartDate && selectedEndDate) {
             let interval_id = setInterval(async () => {
-                if (initial_image_loaded) {
+                if (initial_image_loaded && !done) {
+                    done = true;
                     let res = await (
                         await fetch(
                             `${import.meta.env.VITE_BASE_URL}/post?request_type=create_task`,
