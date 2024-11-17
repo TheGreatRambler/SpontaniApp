@@ -14,6 +14,7 @@
       "start": 1731825677,
       "stop": 1731925677,
       "initial_img_id": "",
+      "id": 1,
     },
     {
       "title": "Rocks",
@@ -23,6 +24,7 @@
       "start": 1731825677,
       "stop": 1731925677,
       "initial_img_id": "",
+      "id": 1,
     },
     {
       "title": "Rocks",
@@ -32,6 +34,7 @@
       "start": 1731825677,
       "stop": 1731925677,
       "initial_img_id": "",
+      "id": 1,
     },
     {
       "title": "Rocks",
@@ -41,6 +44,7 @@
       "start": 1731825677,
       "stop": 1731925677,
       "initial_img_id": "",
+      "id": 1,
     },
     {
       "title": "Rocks",
@@ -50,6 +54,7 @@
       "start": 1731825677,
       "stop": 1731925677,
       "initial_img_id": "",
+      "id": 1,
     },
     {
       "title": "Rocks",
@@ -59,6 +64,7 @@
       "start": 1731825677,
       "stop": 1731925677,
       "initial_img_id": "",
+      "id": 1,
     },
     {
       "title": "Rocks",
@@ -68,6 +74,7 @@
       "start": 1731825677,
       "stop": 1731925677,
       "initial_img_id": "",
+      "id": 1,
     },
   ]);
 
@@ -130,7 +137,7 @@
     </header>
     <div class="grid grid-flow-row grid-cols-1 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))] gap-4 place-content-center">
       {#each Array(3) as _}
-        <DestinationCard description="foo bar eggs spam"  endDate={0} img={tmpImage} lat={0.0} lng={0.0} name="placeholder" />
+        <DestinationCard description="foo bar eggs spam"  endDate={0} img={tmpImage} lat={0.0} lng={0.0} name="placeholder" id={1} />
       {/each}
     </div>
   </div>
