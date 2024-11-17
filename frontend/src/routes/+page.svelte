@@ -1,7 +1,47 @@
 <script lang='ts'>
+  import { onMount } from 'svelte';
+  import { Loader } from '@googlemaps/js-api-loader';
   import DestinationCard from '$lib/destinationCard.svelte';
 
   let tmpImage = 'rocks.jpg';
+
+  let mapElement: HTMLElement;
+
+  let map: google.maps.Map | undefined;
+
+  onMount(async () => {
+
+    const loader = new Loader({
+      apiKey: await (await fetch('https://55ztt2t02i.execute-api.us-east-1.amazonaws.com/prod/get?request_type=get_google_maps_key')).json(),
+      version: 'weekly',
+      // ...additionalOptions,
+    });
+
+    let latitude: number = 0.0;
+    let longitude: number = 0.0;
+    navigator.geolocation.getCurrentPosition(
+      (position: GeolocationPosition) => {
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+        if (map !== undefined) {
+          map.setCenter({ lat: latitude, lng: longitude });
+        }
+      });
+
+    const mapOptions = {
+      zoom: 16
+    };
+
+    // Callback
+    loader.loadCallback(e => {
+
+      if (e) {
+      } else {
+        map = new google.maps.Map(mapElement, mapOptions);
+      }
+    });
+
+  });
 </script>
 
 <div class="flex flex-col items-center w-full py-24 bg-primary-300">
@@ -9,7 +49,10 @@
   <p class="text-lg text-primary-900">unite through adventure</p>
 </div>
 
-<main class="mx-4">
+<main class="m-4">
+
+  <div bind:this={mapElement} class="m-auto w-full max-w-[800px] aspect-video"></div>
+
   <div class="my-12">
     <header class="my-4">
       <h2 class="my-2 mt-2 text-3xl font-bold">current destinations</h2>
