@@ -25,6 +25,7 @@
   }}
   {img}
   class="max-w-[600px] hover:bg-gray-200"
+  imgClass="aspect-[3/2] object-cover"
 >
   <h3 class="font-bold text-lg text-black">{name.toLowerCase()}</h3>
   <p class="text-sm text-gray-600">
