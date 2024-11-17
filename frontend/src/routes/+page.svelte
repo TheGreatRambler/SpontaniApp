@@ -1,10 +1,11 @@
 <script lang='ts'>
+  import { onMount } from 'svelte';
   import DestinationCard from '$lib/destinationCard.svelte';
   import MapComponent from '$lib/map.svelte';
 
   let tmpImage = 'rocks.jpg';
 
-  const destinationData = [
+  let destinationData = $state([
     {
       "title": "Rocks",
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magnam aliquam quaerat.",
@@ -68,7 +69,27 @@
       "stop": 1731925677,
       "initial_img_id": "",
     },
-  ];
+  ]);
+
+  let loaded = $state(false);
+
+  let start_lat = $state(0.0);
+  let start_lng = $state(0.0);
+
+  onMount(async () => {
+    navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
+      start_lat = position.coords.latitude;
+      start_lng = position.coords.longitude;
+      loaded = true;
+    });
+
+    (async function () {
+      let res = await fetch(
+        "https://f007qjswdf.execute-api.us-east-1.amazonaws.com/prod/get?request_type=get_nearby_recent_tasks&lat=1234&lng=1234",
+      );
+      destinationData = await res.json();
+    })();
+  });
 </script>
 
 <div class="flex flex-col items-center w-full py-24 bg-primary-300">
@@ -77,8 +98,9 @@
 </div>
 
 <main class="m-4">
-
-  <MapComponent markers={[{lat: 32.98599729543064, lng: -96.7508045889115, title: 'hello'}]}/>
+  {#if loaded}
+    <MapComponent markers={[{lat: 32.98599729543064, lng: -96.7508045889115, title: 'hello'}]} start_lat={start_lat} start_lng={start_lng}/>
+  {/if}
 
   <div class="my-12">
     <header class="my-4">
