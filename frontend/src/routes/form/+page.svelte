@@ -1,12 +1,21 @@
 <script>
+    import { onMount } from 'svelte';
     import { Card, Button, Label, Input, Datepicker, Fileupload, Helper } from 'flowbite-svelte';
     import MapComponent from '$lib/map.svelte';
     let selectedDate = null;
 
-    const location = {
-        lat: 32.9857,
-        lng: 96.7502
-    };
+    let loaded = $state(false);
+
+    let lat = $state(0.0);
+    let lng = $state(0.0);
+
+    onMount(async () => {
+      navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
+        lat = position.coords.latitude;
+        lng = position.coords.longitude;
+        loaded = true;
+      });
+    });
 
     const markers = [
         { lat: 32.98599729543064, lng: -96.7508045889115, title: 'hello' }
@@ -50,7 +59,7 @@
                 <Label class="space-y-2">
                     <h3 class="text-xl font-medium text-gray-900 dark:text-white">Location</h3>
                 </Label>
-                <MapComponent {markers}/>
+                <MapComponent {markers} start_lat={lat} start_lng={lng}/>
         </form>
     </div>
 </div>
