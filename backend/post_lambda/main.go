@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -242,6 +243,52 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		return events.APIGatewayProxyResponse{
 			StatusCode: 200,
 			Body:       fmt.Sprintf("\"id\":%d}", img_id),
+		}, nil
+
+	case "update_image":
+		img_id_str, exists := request.QueryStringParameters["id"]
+		if !exists {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       "Missing required parameter: id",
+			}, nil
+		}
+
+		task_id_str, exists := request.QueryStringParameters["task_id"]
+		if !exists {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       "Missing required parameter: body",
+			}, nil
+		}
+
+		img_id, img_id_err := strconv.Atoi(img_id_str)
+		task_id, task_id_err := strconv.Atoi(task_id_str)
+		if img_id_err != nil || task_id_err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       "Invalid required parameters: id, task_id",
+				Headers: map[string]string{
+					"Content-Type": "text/plain",
+				},
+			}, nil
+		}
+
+		_, err := dbConn.Exec(context.Background(), `
+			UPDATE img SET task_id = $1 WHERE id = $2
+		`, task_id, img_id)
+		if err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 400,
+				Body:       fmt.Sprintf("Database error: %v", err),
+				Headers: map[string]string{
+					"Content-Type": "text/plain",
+				},
+			}, nil
+		}
+
+		return events.APIGatewayProxyResponse{
+			StatusCode: 200,
 		}, nil
 
 	default:
