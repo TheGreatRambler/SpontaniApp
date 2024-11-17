@@ -76,9 +76,7 @@ func init() {
 		panic(fmt.Sprintf("Failed to create Google Maps client: %v", err))
 	}
 
-	s3Client = s3.New(session.Must(session.NewSession(&aws.Config{
-		Region: aws.String(os.Getenv("S3_REGION")),
-	})))
+	s3Client = s3.New(session.Must(session.NewSession()))
 
 	pgx_config, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
 	if err != nil {
