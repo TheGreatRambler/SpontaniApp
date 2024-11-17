@@ -1,6 +1,29 @@
 # This file is maintained automatically by "terraform init".
 # Manual edits may be lost in future updates.
 
+provider "registry.terraform.io/germanbrew/dotenv" {
+  version     = "1.1.4"
+  constraints = "~> 1.0"
+  hashes = [
+    "h1:Ep936finevmx6jtjFys/fj3KTekzGL2GfNuhbGuPALg=",
+    "zh:13f6a4a4bb097e2b54a9fc5e8f737924d67215ce28c20b6ebf588a6ba829cd1d",
+    "zh:1ebea010aaba4ad838763a9781d8c3eda97b8d5136e09c1af07a06f7b59058be",
+    "zh:2876ef56721f2ab7c7e6a82118b0e40cfd3a7b5919aa41fc8ee5ea7e767d1f57",
+    "zh:421d1a464f4822262bcd3ad793e9e30ba3e5d235840af7e665d3aaaa961bbbed",
+    "zh:56a211b9d6cdb1fde4d4a2470e530016ac987ca0aa906c6c8d68e594de3e3573",
+    "zh:5de69319d66558c3c463d5578f4f8a43e48880a5313c0f41b064cc30e923d2d6",
+    "zh:60f32bba3971f0061759dbf386e6c17947a2e2da08909856a8816e2b8c9ea300",
+    "zh:85fd8eeb76885ecefe1880019a650bd0b8fc3862b767d30562016374ec4d7e91",
+    "zh:890df766e9b839623b1f0437355032a3c006226a6c200cd911e15ee1a9014e9f",
+    "zh:8c7c1f427fdbd2d9716bf686e2d83fde130c15af88cb2ad1c627c96010f52128",
+    "zh:91f9c38b663ff2a77c300f8eaa177db3f5cc614f93eecf0c2390af393040397f",
+    "zh:b00b06f5bdf2eae7dc5b5223aa190963d81d94e9bba3f3338af4cfb73d4ebc15",
+    "zh:b5a1174aedbb1b25bd3a783ca6af2a52469a185347a2ae5db6634b213df0744d",
+    "zh:baaadf8ee47ac956116e9e9048cedda8813823c3a00cdb986d3144f1de1ad01b",
+    "zh:ca62cd06d5928a4a38dc3378abcc6500e544071b070b9c4d80621c7475178993",
+  ]
+}
+
 provider "registry.terraform.io/hashicorp/aws" {
   version = "5.76.0"
   hashes = [

@@ -1,5 +1,24 @@
+terraform {
+  required_providers {
+    dotenv = {
+      source  = "germanbrew/dotenv"
+      version = "~> 1.0"
+    }
+  }
+}
+
 provider "aws" {
   region = "us-east-1" 
+}
+
+provider "dotenv" {}
+
+data "dotenv" "env" {
+  filename = "./.env"
+}
+
+locals {
+  env_vars = data.dotenv.env.entries
 }
 
 resource "aws_iam_role" "lambda_role" {
@@ -39,6 +58,7 @@ module "get_lambda" {
     source = "./lambda"
     function_name = "get"
     zip_path = "../backend/get_lambda/getLambda.zip"
+    env_vars = local.env_vars
     handler = "bootstrap"
     runtime = "provided.al2"
     role_arn = aws_iam_role.lambda_role.arn
