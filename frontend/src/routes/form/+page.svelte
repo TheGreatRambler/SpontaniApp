@@ -76,7 +76,7 @@
 
     let on_form_submit = async () => {
         if (selectedStartDate && selectedEndDate) {
-            await fetch(
+            let res = await (await fetch(
                 `${import.meta.env.VITE_BASE_URL}/post?request_type=create_task`,
                 {
                     method: "POST",
@@ -89,6 +89,14 @@
                         stop: Math.floor(selectedEndDate!.getTime() / 1000),
                         initial_image_id: form_data.initial_image_id,
                     }),
+                },
+            )).json();
+
+            // Update image's task ID
+            await fetch(
+                `${import.meta.env.VITE_BASE_URL}/post?request_type=update_image&id=${form_data.initial_image_id}&task_id=${res.id}`,
+                {
+                    method: "POST",
                 },
             );
         }

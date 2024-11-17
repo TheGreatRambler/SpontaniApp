@@ -259,7 +259,7 @@ func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 			}, nil
 		}
 
-		caption, _ := request.QueryStringParameters["caption"]
+		caption := request.QueryStringParameters["caption"]
 
 		img_id, img_id_err := strconv.Atoi(img_id_str)
 		task_id, task_id_err := strconv.Atoi(task_id_str)
