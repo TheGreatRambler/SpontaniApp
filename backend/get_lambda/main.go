@@ -11,7 +11,6 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/jackc/pgx/v5"
@@ -62,11 +61,6 @@ func init() {
 
 	s3Client = s3.New(session.Must(session.NewSession(&aws.Config{
 		Region: aws.String(os.Getenv("S3_REGION")),
-		Credentials: credentials.NewStaticCredentials(
-			os.Getenv("AWS_ACCESS_KEY_ID"),
-			os.Getenv("AWS_SECRET_ACCESS_KEY"),
-			"",
-		),
 	})))
 
 	pgx_config, err := pgxpool.ParseConfig(os.Getenv("DATABASE_URL"))
